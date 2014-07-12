@@ -213,6 +213,11 @@ static bool init_arm_motors()
     sprayer.test_pump(false);
 #endif
 
+#if FRAME_CONFIG == HELI_FRAME
+    // force recalculation of scalers
+    heli_init();
+#endif
+
     // short delay to allow reading of rc inputs
     delay(30);
 
