@@ -60,6 +60,15 @@ const AP_Param::GroupInfo AC_AttitudeControl_Heli::var_info[] PROGMEM = {
     // @User: Advanced
     AP_GROUPINFO("RATE_FF_ENAB", 5, AC_AttitudeControl_Heli, _rate_bf_ff_enabled, AC_ATTITUDE_CONTROL_RATE_BF_FF_DEFAULT),
 
+    // @Param: RATE_FF_LPF
+    // @DisplayName: Rate Feedforward Low-Pass Filter Cutoff Frequency
+    // @Description: The cutoff frequency for the Roll, Pitch and Yaw LPF
+    // @Units: Hz
+    // @Range: 5 100
+    // @Increment: 1
+    // @User: Advanced
+    AP_GROUPINFO("RATE_FF_LPF", 6, AC_AttitudeControl_Heli, _rate_lpf_cutoff, AC_ATTITUDE_HELI_RATE_FF_FILTER_DEFAULT),
+    
     AP_GROUPEND
 };
 
@@ -368,8 +377,8 @@ int16_t AC_AttitudeControl_Heli::get_angle_boost(int16_t throttle_pwm)
 // update_feedforward_filter_rate - Sets LPF cutoff frequency
 void AC_AttitudeControl_Heli::update_feedforward_filter_rates(float time_step)
 {
-    pitch_feedforward_filter.set_cutoff_frequency(time_step, AC_ATTITUDE_HELI_RATE_FF_FILTER);
-    roll_feedforward_filter.set_cutoff_frequency(time_step, AC_ATTITUDE_HELI_RATE_FF_FILTER);
-    yaw_feedforward_filter.set_cutoff_frequency(time_step, AC_ATTITUDE_HELI_RATE_FF_FILTER);
+    pitch_feedforward_filter.set_cutoff_frequency(time_step, _rate_lpf_cutoff);
+    roll_feedforward_filter.set_cutoff_frequency(time_step, _rate_lpf_cutoff);
+    yaw_feedforward_filter.set_cutoff_frequency(time_step, _rate_lpf_cutoff);
 }
 

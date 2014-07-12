@@ -14,7 +14,7 @@
 #define AC_ATTITUDE_HELI_PITCH_FF                   0.0f
 #define AC_ATTITUDE_HELI_YAW_FF                     0.0f
 #define AC_ATTITUDE_HELI_RATE_INTEGRATOR_LEAK_RATE  0.02f
-#define AC_ATTITUDE_HELI_RATE_FF_FILTER             5.0f
+#define AC_ATTITUDE_HELI_RATE_FF_FILTER_DEFAULT     20.0f
 
 class AC_AttitudeControl_Heli : public AC_AttitudeControl {
 public:
@@ -83,6 +83,9 @@ private:
     LowPassFilterInt32 pitch_feedforward_filter;
     LowPassFilterInt32 roll_feedforward_filter;
     LowPassFilterInt32 yaw_feedforward_filter;
+    
+    // parameters
+    AP_Float            _rate_lpf_cutoff;       //cutoff frequency for the Roll, Pitch and Yaw LPF
 
     // pass through for roll and pitch
     int16_t _passthrough_roll;
