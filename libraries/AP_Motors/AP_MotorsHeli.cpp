@@ -806,3 +806,11 @@ void AP_MotorsHeli::set_delta_phase_angle(int16_t angle)
     _delta_phase_angle = angle;
     calculate_roll_pitch_collective_factors();
 }
+
+// set_dt for setting main loop rate time
+void AP_MotorsHeli::set_dt(float dt)
+{ 
+    _dt = dt;
+    // force recalculation of RSC ramp rates after setting _dt
+    recalc_scalers();
+}

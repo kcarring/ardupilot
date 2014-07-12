@@ -194,7 +194,7 @@ public:
     static const struct AP_Param::GroupInfo var_info[];
     
     // set_dt for setting main loop rate time
-    void set_dt(float dt) { _dt = dt; }
+    void set_dt(float dt);
     
     // set_delta_phase_angle for setting variable phase angle compensation and force
     // recalculation of collective factors
