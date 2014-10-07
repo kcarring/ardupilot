@@ -121,6 +121,7 @@ public:
         k_param_terrain,
         k_param_acro_expo,
         k_param_throttle_deadzone,      // 57
+        k_param_object_detect,          // 58
 
         // 65: AP_Limits Library
         k_param_limits = 65,            // deprecated - remove
