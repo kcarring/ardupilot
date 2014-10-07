@@ -1003,6 +1003,12 @@ const AP_Param::Info var_info[] PROGMEM = {
     GOBJECT(camera_mount2,           "MNT2_",       AP_Mount),
 #endif
 
+#if OBJECTDETECT == ENABLED
+    // @Group: OBJ_
+    // @Path: ../libraries/AP_ObjectDetect/AP_ObjectDetect.cpp
+    GOBJECT(object_detect,           "OBJ_", AP_ObjectDetect),
+#endif
+
     // @Group: BATT_
     // @Path: ../libraries/AP_BattMonitor/AP_BattMonitor.cpp
     GOBJECT(battery,                "BATT_",       AP_BattMonitor),

@@ -124,6 +124,7 @@ public:
         k_param_optflow,
         k_param_dcmcheck_thresh,        // 59
         k_param_log_bitmask,
+        k_param_object_detect,          // 61
 
         // 65: AP_Limits Library
         k_param_limits = 65,            // deprecated - remove
