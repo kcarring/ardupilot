@@ -716,6 +716,7 @@ static AP_Mount camera_mount2(&current_loc, ahrs, 1);
 // Object Detector, this is to sweep a Lidar unit to detect objects
 #if OBJECTDETECT == ENABLED
 static AP_ObjectDetect object_detect(ahrs);
+static RangeFinder object_scanner;
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

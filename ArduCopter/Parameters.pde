@@ -1007,6 +1007,9 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Group: OBJ_
     // @Path: ../libraries/AP_ObjectDetect/AP_ObjectDetect.cpp
     GOBJECT(object_detect,           "OBJ_", AP_ObjectDetect),
+    // @Group: SCAN_
+    // @Path: ../libraries/AP_RangeFinder/RangeFinder.cpp
+    GOBJECT(object_scanner,   "OBJ_", RangeFinder),
 #endif
 
     // @Group: BATT_
