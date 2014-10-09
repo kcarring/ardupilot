@@ -25,6 +25,7 @@
 #include <AP_Common.h>
 #include <AP_GPS.h>
 #include <AP_AHRS.h>
+#include <RangeFinder.h>
 #include <GCS_MAVLink.h>
 #include <RC_Channel.h>
 
@@ -32,13 +33,16 @@ class AP_ObjectDetect
 {
 public:
     //Constructor
-    AP_ObjectDetect(const AP_AHRS &ahrs);
+    AP_ObjectDetect(const AP_AHRS &ahrs, RangeFinder &object_scanner);
     
     // initialization procedure.
     void    init(float delta_sec);
 
     // should be called periodically
     void    update_objectdetect_position();
+    
+    // accessor to get the current distance measurement;
+    uint16_t    get_object_distance() const {return _object_distance;}
 
     // hook for eeprom variables
     static const struct AP_Param::GroupInfo        var_info[];
@@ -47,6 +51,7 @@ private:
 
     //members
     const AP_AHRS                   &_ahrs; ///< Rotation matrix from earth to plane.
+    RangeFinder                     &_object_scanner; // Object Scanning Lidar or Sonar.
     
     bool                            _tilt_sweep_reverse;
     bool                            _pan_sweep_reverse;
@@ -56,6 +61,8 @@ private:
     float                           _dt;        // time step of loop
     float                           _tilt_sweep_increment;  // centi-degrees
     float                           _pan_sweep_increment;   // centi-degrees
+    
+    uint16_t                        _object_distance;
 
 
     // EEPROM parameters

@@ -712,9 +712,8 @@ static AP_Mount camera_mount2(&current_loc, ahrs, 1);
 ///////////////////////////////////////////////////////////////////
 // Object Detector, this is to sweep a Lidar unit to detect objects
 #if OBJECTDETECT == ENABLED
-static AP_ObjectDetect object_detect(ahrs);
 static RangeFinder object_scanner;
-static int16_t object_distance;
+static AP_ObjectDetect object_detect(ahrs, object_scanner);
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1094,16 +1093,6 @@ static void update_mount()
 static void update_object_detect()
 {
 #if OBJECTDETECT == ENABLED
-
-    object_scanner.update();
-    
-    // exit immediately if scanner is disabled
-    if (!object_scanner.healthy()) {
-        return;
-    }
-    
-    object_distance = object_scanner.distance_cm();
-
     // update object_detect mount's position
     object_detect.update_objectdetect_position();
 #endif
