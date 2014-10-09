@@ -29,7 +29,7 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @DisplayName: Minimum tilt angle
     // @Description: Minimum physical tilt (pitch) angular position of object detect.
     // @Units: Centi-Degrees
-    // @Range: -18000 17999
+    // @Range: -9000 8999
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGMIN_TIL", 3, AP_ObjectDetect, _tilt_angle_min, -4500),
@@ -38,7 +38,7 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @DisplayName: Maximum tilt angle
     // @Description: Maximum physical tilt (pitch) angular position of the object detect
     // @Units: Centi-Degrees
-    // @Range: -18000 17999
+    // @Range: -9000 8999
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGMAX_TIL", 4, AP_ObjectDetect, _tilt_angle_max, 4500),
@@ -47,7 +47,7 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @DisplayName: Minimum pan angle
     // @Description: Minimum physical pan (yaw) angular position of object detect.
     // @Units: Centi-Degrees
-    // @Range: -18000 17999
+    // @Range: -9000 8999
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGMIN_PAN",  5, AP_ObjectDetect, _pan_angle_min,  -4500),
@@ -56,7 +56,7 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @DisplayName: Maximum pan angle
     // @Description: Maximum physical pan (yaw) angular position of the object detect
     // @Units: Centi-Degrees
-    // @Range: -18000 17999
+    // @Range: -9000 8999
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGMAX_PAN",  6, AP_ObjectDetect, _pan_angle_max,  4500),
@@ -79,7 +79,7 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @DisplayName: Sweep tilt angle
     // @Description: Included angle to be swept in tilt
     // @Units: Centi-Degrees
-    // @Range: -9000 8999
+    // @Range: 0 9000
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGSW_TILT", 9, AP_ObjectDetect, _ang_sweep_tilt, 1500),
@@ -88,10 +88,19 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @DisplayName: Sweep pan angle
     // @Description: Included angle to be swept in pan
     // @Units: Centi-Degrees
-    // @Range: -9000 8999
+    // @Range: 0 9000
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGSW_PAN", 10, AP_ObjectDetect, _ang_sweep_pan, 1500),
+    
+    // @Param: SWEEP_HZ
+    // @DisplayName: Sweep Frequency
+    // @Description: Speed for a single sweep
+    // @Units: Frequency
+    // @Range: 0 400
+    // @Increment: 1
+    // @User: Standard
+    AP_GROUPINFO("SWEEP_HZ", 11, AP_ObjectDetect, _sweep_hz, 1),
     
     AP_GROUPEND
 };
@@ -99,20 +108,19 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
 AP_ObjectDetect::AP_ObjectDetect(const AP_AHRS &ahrs) :
     _ahrs(ahrs),
     _tilt_angle(0.0f),
-    _pan_angle(0.0f)
+    _pan_angle(0.0f),
+    _tilt_sweep_reverse(false),
+    _pan_sweep_reverse(false)
 {
 	AP_Param::setup_object_defaults(this, var_info);
-
-    _tilt_idx = RC_Channel_aux::k_objectdetect_tilt;
-    _pan_idx  = RC_Channel_aux::k_objectdetect_pan;
 }
 
 // Initialize
 void AP_ObjectDetect::init(float delta_sec)
 {
     _dt = delta_sec;
-    _tilt_sweep_increment = _ang_sweep_tilt * _dt;
-    _pan_sweep_increment = _ang_sweep_pan * _dt;
+    _tilt_sweep_increment = _ang_sweep_tilt * _dt *_sweep_hz * 2;
+    _pan_sweep_increment = _ang_sweep_pan * _dt *_sweep_hz * 2;
 }
 
 /// This one should be called periodically
@@ -130,49 +138,10 @@ void AP_ObjectDetect::update_objectdetect_position()
         _pan_sweep_reverse = true;
     }
     
-    if (_pan_angle <= _ang_sweep_pan){
+    if (_pan_angle <= -_ang_sweep_pan){
         _pan_sweep_reverse = false;
     }
-
-    // write the results to the servos
-    move_servo(_tilt_idx, _tilt_angle*10, _tilt_angle_min*0.1f, _tilt_angle_max*0.1f);
-    move_servo(_pan_idx,  _pan_angle*10,  _pan_angle_min*0.1f,  _pan_angle_max*0.1f);
-}
-
-/// all angles are degrees * 10 units
-void
-AP_ObjectDetect::move_servo(uint8_t function_idx, int16_t angle, int16_t angle_min, int16_t angle_max)
-{
-	// saturate to the closest angle limit if outside of [min max] angle interval
-	int16_t servo_out = closest_limit(angle, &angle_min, &angle_max);
-	RC_Channel_aux::move_servo((RC_Channel_aux::Aux_servo_function_t)function_idx, servo_out, angle_min, angle_max);
-}
-
-/// saturate to the closest angle limit if outside of [min max] angle interval
-/// input angle is in degrees * 10
-int16_t
-AP_ObjectDetect::closest_limit(int16_t angle, int16_t* angle_min, int16_t* angle_max)
-{
-    // Make sure the angle lies in the interval [-180 .. 180[ degrees
-    while (angle < -1800) angle += 3600;
-    while (angle >= 1800) angle -= 3600;
-
-    // Make sure the angle limits lie in the interval [-180 .. 180[ degrees
-    while (*angle_min < -1800) *angle_min += 3600;
-    while (*angle_min >= 1800) *angle_min -= 3600;
-    while (*angle_max < -1800) *angle_max += 3600;
-    while (*angle_max >= 1800) *angle_max -= 3600;
-
-
-    // If the angle is outside servo limits, saturate the angle to the closest limit
-    // On a circle the closest angular position must be carefully calculated to account for wrap-around
-    if ((angle < *angle_min) && (angle > *angle_max)) {
-        // angle error if min limit is used
-        int16_t err_min = *angle_min - angle + (angle<*angle_min ? 0 : 3600);     // add 360 degrees if on the "wrong side"
-        // angle error if max limit is used
-        int16_t err_max = angle - *angle_max + (angle>*angle_max ? 0 : 3600);     // add 360 degrees if on the "wrong side"
-        angle = err_min<err_max ? *angle_min : *angle_max;
-    }
-
-    return angle;
+    
+    RC_Channel_aux::move_servo(RC_Channel_aux::k_objectdetect_pan, _pan_angle, _pan_angle_min,  _pan_angle_max);
+    RC_Channel_aux::move_servo(RC_Channel_aux::k_objectdetect_tilt, _tilt_angle, _tilt_angle_min, _tilt_angle_max);
 }
