@@ -105,8 +105,9 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     AP_GROUPEND
 };
 
-AP_ObjectDetect::AP_ObjectDetect(const AP_AHRS &ahrs) :
+AP_ObjectDetect::AP_ObjectDetect(const AP_AHRS &ahrs, RangeFinder &object_scanner) :
     _ahrs(ahrs),
+    _object_scanner(object_scanner),
     _tilt_angle(0.0f),
     _pan_angle(0.0f),
     _tilt_sweep_reverse(false),
@@ -126,6 +127,15 @@ void AP_ObjectDetect::init(float delta_sec)
 /// This one should be called periodically
 void AP_ObjectDetect::update_objectdetect_position()
 {    
+    _object_scanner.update();
+    
+    // exit immediately if scanner is disabled
+    if (!_object_scanner.healthy()) {
+        return;
+    }
+    
+    _object_distance = _object_scanner.distance_cm();
+    
     _tilt_angle = 0;
     
     if (_pan_sweep_reverse){
