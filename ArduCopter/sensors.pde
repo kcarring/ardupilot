@@ -7,6 +7,14 @@ static void init_sonar(void)
 }
 #endif
 
+#if OBJECTDETECT == ENABLED
+static void init_object_detect(void)
+{
+    object_detect.init(MAIN_LOOP_SECONDS);
+    object_scanner.init();
+}
+#endif
+
 static void init_barometer(bool full_calibration)
 {
     gcs_send_text_P(SEVERITY_LOW, PSTR("Calibrating barometer"));

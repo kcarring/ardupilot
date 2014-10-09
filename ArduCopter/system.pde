@@ -265,6 +265,10 @@ static void init_ardupilot()
     init_sonar();
 #endif
 
+#if OBJECTDETECT == ENABLED
+    init_object_detect();
+#endif
+
     // initialise mission library
     mission.init();
 
