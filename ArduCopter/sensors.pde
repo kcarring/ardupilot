@@ -10,7 +10,8 @@ static void init_sonar(void)
 #if OBJECTDETECT == ENABLED
 static void init_object_detect(void)
 {
-    object_detect.init(MAIN_LOOP_SECONDS);
+    // Initilize the detector at 0.02 seconds because it is running at 50Hz in the scheduler
+    object_detect.init(0.02);
     object_scanner.init();
 }
 #endif

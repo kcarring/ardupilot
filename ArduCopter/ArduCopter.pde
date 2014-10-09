@@ -828,6 +828,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { update_copter_leds,   40,      5 },
 #endif
     { update_mount,          8,     45 },
+    { update_object_detect,  8,     45 },
     { ten_hz_logging_loop,  40,     30 },
     { fifty_hz_logging_loop, 8,     22 },
     { perf_update,        4000,     20 },
@@ -1087,6 +1088,16 @@ static void update_mount()
 
 #if CAMERA == ENABLED
     camera.trigger_pic_cleanup();
+#endif
+}
+
+// update_object_detect - update object detection system
+// should be run at 50hz
+static void update_object_detect()
+{
+#if OBJECTDETECT == ENABLED
+    // update object_detect mount's position
+    object_detect.update_objectdetect_position();
 #endif
 }
 
