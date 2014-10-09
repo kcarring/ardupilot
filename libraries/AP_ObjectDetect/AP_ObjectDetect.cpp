@@ -60,7 +60,39 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @Increment: 1
     // @User: Standard
     AP_GROUPINFO("ANGMAX_PAN",  6, AP_ObjectDetect, _pan_angle_max,  4500),
+    
+    // @Param: SWEEP_TILT
+    // @DisplayName: Sweep object detect tilt angle
+    // @Description: enable tilt/pitch sweep relative to Earth
+    // @Values: 0:Disabled,1:Enabled
+    // @User: Standard
+    AP_GROUPINFO("SWEEP_TILT", 7, AP_ObjectDetect, _sweep_tilt,  0),
 
+    // @Param: SWEEP_PAN
+    // @DisplayName: Sweep object detect pan angle
+    // @Description: enable pan/yaw ssweep relative to Earth
+    // @Values: 0:Disabled,1:Enabled
+    // @User: Standard
+    AP_GROUPINFO("SWEEP_PAN",   8, AP_ObjectDetect, _sweep_pan,  0),
+    
+    // @Param: ANG_SWEEP_TILT
+    // @DisplayName: Sweep tilt angle
+    // @Description: Included angle to be swept in tilt
+    // @Units: Centi-Degrees
+    // @Range: -9000 8999
+    // @Increment: 1
+    // @User: Standard
+    AP_GROUPINFO("ANGSW_TILT", 9, AP_ObjectDetect, _ang_sweep_tilt, 1500),
+    
+    // @Param: ANG_SWEEP_PAN
+    // @DisplayName: Sweep pan angle
+    // @Description: Included angle to be swept in pan
+    // @Units: Centi-Degrees
+    // @Range: -9000 8999
+    // @Increment: 1
+    // @User: Standard
+    AP_GROUPINFO("ANGSW_PAN", 10, AP_ObjectDetect, _ang_sweep_pan, 1500),
+    
     AP_GROUPEND
 };
 
@@ -75,11 +107,32 @@ AP_ObjectDetect::AP_ObjectDetect(const AP_AHRS &ahrs) :
     _pan_idx  = RC_Channel_aux::k_objectdetect_pan;
 }
 
+// Initialize
+void AP_ObjectDetect::init(float delta_sec)
+{
+    _dt = delta_sec;
+    _tilt_sweep_increment = _ang_sweep_tilt * _dt;
+    _pan_sweep_increment = _ang_sweep_pan * _dt;
+}
+
 /// This one should be called periodically
 void AP_ObjectDetect::update_objectdetect_position()
 {    
     _tilt_angle = 0;
-    _pan_angle = 0;
+    
+    if (_pan_sweep_reverse){
+        _pan_angle -= _pan_sweep_increment;
+    } else {
+        _pan_angle += _pan_sweep_increment;
+    }
+    
+    if (_pan_angle >= _ang_sweep_pan){
+        _pan_sweep_reverse = true;
+    }
+    
+    if (_pan_angle <= _ang_sweep_pan){
+        _pan_sweep_reverse = false;
+    }
 
     // write the results to the servos
     move_servo(_tilt_idx, _tilt_angle*10, _tilt_angle_min*0.1f, _tilt_angle_max*0.1f);
