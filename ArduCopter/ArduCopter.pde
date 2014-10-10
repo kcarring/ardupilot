@@ -717,6 +717,7 @@ static AP_Mount camera_mount2(&current_loc, ahrs, 1);
 #if OBJECTDETECT == ENABLED
 static RangeFinder object_scanner;
 static AP_ObjectDetect object_detect(ahrs, object_scanner);
+static int16_t loiter_correction;
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1098,6 +1099,11 @@ static void update_object_detect()
 #if OBJECTDETECT == ENABLED
     // update object_detect mount's position
     object_detect.update_objectdetect_position();
+    if (object_detect.enabled()){
+        loiter_correction = constrain_int16(g.rc_2.control_in + object_detect.get_loiter_decel(), -4500, 4500);
+    } else { 
+        loiter_correction = 0;
+    }
 #endif
 }
 
