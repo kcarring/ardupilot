@@ -127,7 +127,8 @@ AP_ObjectDetect::AP_ObjectDetect(const AP_AHRS &ahrs, RangeFinder &object_scanne
     _tilt_angle(0.0f),
     _pan_angle(0.0f),
     _tilt_sweep_reverse(false),
-    _pan_sweep_reverse(false)
+    _pan_sweep_reverse(false),
+    _enabled(true)
 {
 	AP_Param::setup_object_defaults(this, var_info);
 }

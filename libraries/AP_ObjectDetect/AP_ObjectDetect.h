@@ -46,6 +46,12 @@ public:
     
     // accessor to get the current loiter correction
     uint16_t    get_loiter_decel();
+    
+    // setter to turn function on and off;
+    void    set_enabled(bool true_false) { _enabled = true_false; }
+    
+    // enabled - returns true if object detector is enabled
+    bool enabled() const { return _enabled; }
 
     // hook for eeprom variables
     static const struct AP_Param::GroupInfo        var_info[];
@@ -58,6 +64,7 @@ private:
     
     bool                            _tilt_sweep_reverse;
     bool                            _pan_sweep_reverse;
+    bool                            _enabled;
     
     float                           _tilt_angle; ///< degrees
     float                           _pan_angle;  ///< degrees
