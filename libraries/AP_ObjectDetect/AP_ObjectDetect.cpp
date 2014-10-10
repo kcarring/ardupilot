@@ -134,7 +134,11 @@ void AP_ObjectDetect::update_objectdetect_position()
         return;
     }
     
-    _object_distance = _object_scanner.distance_cm();
+    _scanner_reading = _object_scanner.distance_cm();
+    
+    if (_scanner_reading < _object_distance){
+        _object_distance = _scanner_reading;
+    }
     
     _tilt_angle = 0;
     
@@ -146,12 +150,27 @@ void AP_ObjectDetect::update_objectdetect_position()
     
     if (_pan_angle >= _ang_sweep_pan){
         _pan_sweep_reverse = true;
+        reset_scanner_capture();
     }
     
     if (_pan_angle <= -_ang_sweep_pan){
         _pan_sweep_reverse = false;
+        reset_scanner_capture();
     }
     
     RC_Channel_aux::move_servo(RC_Channel_aux::k_objectdetect_pan, _pan_angle, _pan_angle_min,  _pan_angle_max);
     RC_Channel_aux::move_servo(RC_Channel_aux::k_objectdetect_tilt, _tilt_angle, _tilt_angle_min, _tilt_angle_max);
+}
+
+// function to reset scanner distance capture.
+void    AP_ObjectDetect::reset_scanner_capture()
+{
+    _last_object_distance = _object_distance;
+    _object_distance = _scanner_reading;
+}
+
+// accessor to get the current distance measurement
+uint16_t AP_ObjectDetect::get_object_distance()
+{
+    return min(_object_distance, _last_object_distance);
 }

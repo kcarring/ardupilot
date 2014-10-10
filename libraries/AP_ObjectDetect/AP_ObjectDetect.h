@@ -41,8 +41,8 @@ public:
     // should be called periodically
     void    update_objectdetect_position();
     
-    // accessor to get the current distance measurement;
-    uint16_t    get_object_distance() const {return _object_distance;}
+    // accessor to get the current distance measurement
+    uint16_t    get_object_distance();
 
     // hook for eeprom variables
     static const struct AP_Param::GroupInfo        var_info[];
@@ -62,8 +62,12 @@ private:
     float                           _tilt_sweep_increment;  // centi-degrees
     float                           _pan_sweep_increment;   // centi-degrees
     
-    uint16_t                        _object_distance;
-
+    uint16_t                        _object_distance;       // closest object during current scan cycle
+    uint16_t                        _last_object_distance;  // closest object during last scan cycle
+    uint16_t                        _scanner_reading;       // current scanner reading
+    
+    // function to reset scanner distance capture
+    void    reset_scanner_capture();
 
     // EEPROM parameters
     AP_Int8                         _stab_tilt; ///< (1 = yes, 0 = no)
