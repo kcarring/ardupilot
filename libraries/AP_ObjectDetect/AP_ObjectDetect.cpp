@@ -102,6 +102,22 @@ const AP_Param::GroupInfo AP_ObjectDetect::var_info[] PROGMEM = {
     // @User: Standard
     AP_GROUPINFO("SWEEP_HZ", 11, AP_ObjectDetect, _sweep_hz, 1),
     
+    // @Param: BUFFER_DIST
+    // @DisplayName: Buffer Distance
+    // @Description: Minimum distance before copter stops
+    // @Units: Centimeters
+    // @Range: 0 2000
+    // @Increment: 100
+    // @User: Standard
+    AP_GROUPINFO("BUFFER_DIST", 12, AP_ObjectDetect, _buffer_dist, 1000),
+    
+    // @Param: PROP_DECEL
+    // @DisplayName: Proportional Decel
+    // @Description: Strength the copter will use to stop
+    // @Range: 0 10
+    // @User: Standard
+    AP_GROUPINFO("PROP_DECEL", 13, AP_ObjectDetect, _decel_p, 1),
+    
     AP_GROUPEND
 };
 
@@ -173,4 +189,13 @@ void    AP_ObjectDetect::reset_scanner_capture()
 uint16_t AP_ObjectDetect::get_object_distance()
 {
     return min(_object_distance, _last_object_distance);
+}
+
+// accessor to get the current loiter correction
+uint16_t    AP_ObjectDetect::get_loiter_decel()
+{
+    int16_t approach_distance = _buffer_dist - get_object_distance();
+    int16_t correction = approach_distance * _decel_p;
+    correction = constrain_int16(correction, 0, 4500);
+    return correction;
 }

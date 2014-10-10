@@ -43,6 +43,9 @@ public:
     
     // accessor to get the current distance measurement
     uint16_t    get_object_distance();
+    
+    // accessor to get the current loiter correction
+    uint16_t    get_loiter_decel();
 
     // hook for eeprom variables
     static const struct AP_Param::GroupInfo        var_info[];
@@ -82,6 +85,8 @@ private:
     AP_Int16                        _ang_sweep_tilt; // tilt angle to be swept
     AP_Int16                        _ang_sweep_pan;  // pan angle to be swept
     AP_Int16                        _sweep_hz;       // speed to sweep servo
+    AP_Int16                        _buffer_dist;    // distance where the copter starts pulling back
+    AP_Float                        _decel_p;        // proportional deceleration term
 };
 
 #endif // __AP_OBJECT_DETECT_H__
