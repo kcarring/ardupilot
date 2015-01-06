@@ -324,6 +324,11 @@ static void startup_ground(bool force_gyro_cal)
     report_ins();
  #endif
 
+    // reset ahrs gyro bias
+    if (force_gyro_cal) {
+        ahrs.reset_gyro_drift();
+    }
+
     // setup fast AHRS gains to get right attitude
     ahrs.set_fast_gains(true);
 
@@ -406,5 +411,26 @@ static void telemetry_send(void)
 #if FRSKY_TELEM_ENABLED == ENABLED
     frsky_telemetry.send_frames((uint8_t)control_mode, 
                                 (AP_Frsky_Telem::FrSkyProtocol)g.serial2_protocol.get());
+#endif
+}
+
+/*
+  should we log a message type now?
+ */
+static bool should_log(uint32_t mask)
+{
+#if LOGGING_ENABLED == ENABLED
+    if (!(mask & g.log_bitmask) || in_mavlink_delay) {
+        return false;
+    }
+    bool ret = motors.armed() || (g.log_bitmask & MASK_LOG_WHEN_DISARMED) != 0;
+    if (ret && !DataFlash.logging_started() && !in_log_download) {
+        // we have to set in_mavlink_delay to prevent logging while
+        // writing headers
+        start_logging();
+    }
+    return ret;
+#else
+    return false;
 #endif
 }
