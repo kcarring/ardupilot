@@ -62,15 +62,15 @@ private:
     const AP_AHRS                   &_ahrs; ///< Rotation matrix from earth to plane.
     RangeFinder                     &_object_scanner; // Object Scanning Lidar or Sonar.
     
-    bool                            _tilt_sweep_reverse;
-    bool                            _pan_sweep_reverse;
     bool                            _enabled;
     
-    float                           _tilt_angle; ///< degrees
-    float                           _pan_angle;  ///< degrees
-    float                           _dt;        // time step of loop
-    float                           _tilt_sweep_increment;  // centi-degrees
-    float                           _pan_sweep_increment;   // centi-degrees
+    float                           _tilt_angle;            ///< degrees
+    float                           _pan_angle;             ///< degrees
+    float                           _dt;                    // time step of loop
+    float                           _sweep_increment;       // radians
+    float                           _sweep_value;           // radians
+    float                           _tilt_angle_pwm;        // angle in centidegrees per PWM.  Typical servos move 90 degrees over 900 PWM.
+    float                           _pan_angle_pwm;         // angle in centidegrees per PWM. Typical servos move 90 degrees over 900 PWM.
     
     uint16_t                        _object_distance;       // closest object during current scan cycle
     uint16_t                        _last_object_distance;  // closest object during last scan cycle
@@ -80,15 +80,17 @@ private:
     void    reset_scanner_capture();
 
     // EEPROM parameters
-    AP_Int8                         _stab_tilt; ///< (1 = yes, 0 = no)
+    AP_Int8                         _stab_tilt; ///< (1 = yes, 0 = no, -1 = reverse)
     AP_Int8                         _stab_pan;  ///< (1 = yes, 0 = no)
     AP_Int8                         _sweep_tilt; ///< (1 = yes, 0 = no)
     AP_Int8                         _sweep_pan;  ///< (1 = yes, 0 = no)
 
     AP_Int16                        _tilt_angle_min; ///< min angle limit of actuated surface in 0.01 degree units
     AP_Int16                        _tilt_angle_max; ///< max angle limit of actuated surface in 0.01 degree units
+    AP_Int16                        _tilt_trim;      ///< trim value for tilt channel
     AP_Int16                        _pan_angle_min;  ///< min angle limit of actuated surface in 0.01 degree units
     AP_Int16                        _pan_angle_max;  ///< max angle limit of actuated surface in 0.01 degree units
+    AP_Int16                        _pan_trim;       ///< trim value for tilt channel
     AP_Int16                        _ang_sweep_tilt; // tilt angle to be swept
     AP_Int16                        _ang_sweep_pan;  // pan angle to be swept
     AP_Int16                        _sweep_hz;       // speed to sweep servo
