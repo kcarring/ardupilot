@@ -176,7 +176,19 @@ void AP_ObjectDetect::update_objectdetect_position()
     }
 
     _sweep_value += _sweep_increment;
-    
+
+    if (_sweep_value > 6.283185307){
+        _sweep_value = 0.0f;
+        reset_scanner_capture();
+    }
+
+    // center servos and exit if scanning is not active.
+    if (!_enabled){
+        RC_Channel_aux::set_radio(RC_Channel_aux::k_objectdetect_pan, _pan_trim);
+        RC_Channel_aux::set_radio(RC_Channel_aux::k_objectdetect_tilt, _tilt_trim);
+        return;
+    }
+
     if (_sweep_tilt){
         _tilt_angle = _ang_sweep_tilt * cos(_sweep_value);
     } else {
@@ -191,11 +203,6 @@ void AP_ObjectDetect::update_objectdetect_position()
         _pan_angle = 0;
     }
 
-    if (_sweep_value > 6.283185307){
-        _sweep_value = 0.0f;
-        reset_scanner_capture();
-    }
-    
     RC_Channel_aux::set_radio(RC_Channel_aux::k_objectdetect_pan, _pan_trim + (_pan_angle/_pan_angle_pwm));
     RC_Channel_aux::set_radio(RC_Channel_aux::k_objectdetect_tilt, _tilt_trim + (_tilt_angle/_tilt_angle_pwm));
 }
