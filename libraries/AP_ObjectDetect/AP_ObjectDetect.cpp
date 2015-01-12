@@ -145,7 +145,7 @@ AP_ObjectDetect::AP_ObjectDetect(const AP_AHRS &ahrs, RangeFinder &object_scanne
     _tilt_angle(0.0f),
     _pan_angle(0.0f),
     _sweep_value(0.0f),
-    _enabled(true)
+    _enabled(false)
 {
 	AP_Param::setup_object_defaults(this, var_info);
 }
@@ -216,8 +216,12 @@ uint16_t AP_ObjectDetect::get_object_distance()
 // accessor to get the current loiter correction
 uint16_t    AP_ObjectDetect::get_loiter_decel()
 {
-    int16_t approach_distance = _buffer_dist - get_object_distance();
-    int16_t correction = approach_distance * _decel_p;
-    correction = constrain_int16(correction, 0, 4500);
-    return correction;
+    if (_enabled){
+        int16_t approach_distance = _buffer_dist - get_object_distance();
+        int32_t correction = approach_distance * _decel_p;
+        correction = constrain_int32(correction, 0, 4500);
+        return correction;
+    } else {
+        return 0;
+    }
 }
