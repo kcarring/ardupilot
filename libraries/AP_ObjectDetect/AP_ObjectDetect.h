@@ -63,6 +63,7 @@ private:
     RangeFinder                     &_object_scanner; // Object Scanning Lidar or Sonar.
     
     bool                            _enabled;
+    bool                            _phase;                 /// True if sweep_increment is between Pi and 2Pi
     
     float                           _tilt_angle;            ///< degrees
     float                           _pan_angle;             ///< degrees

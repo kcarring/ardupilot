@@ -177,8 +177,13 @@ void AP_ObjectDetect::update_objectdetect_position()
 
     _sweep_value += _sweep_increment;
 
-    if (_sweep_value > 6.283185307){
+    if (!_phase && _sweep_value > M_PI){
+        _phase = true;
+        reset_scanner_capture();
+    }
+    if (_sweep_value > 2*M_PI){
         _sweep_value = 0.0f;
+        _phase = false;
         reset_scanner_capture();
     }
 
