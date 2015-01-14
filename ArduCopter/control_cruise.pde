@@ -45,11 +45,29 @@ static void cruise_run()
     // process pilot inputs
     if (!failsafe.radio) {
 
+        int16_t skid_correction;
+
+        // Grab inertial velocity
+        const Vector3f& vel = inertial_nav.get_velocity();
+
+        // rotate roll, pitch input from north facing to vehicle's perspective
+        // units are cm/sec
+        float slip_vel =  vel.y * ahrs.cos_yaw() - vel.x * ahrs.sin_yaw();      // velocity at which copter is sliding sideways
+        float forward_vel = vel.y * ahrs.sin_yaw() + vel.x * ahrs.cos_yaw();    // forward velocity of copter
+
+        // if forward velocity is small, do nothing, to avoid dithering side-to-side when in a stable hover
+        if (fabs(forward_vel)>100){
+            skid_correction = slip_vel * -g.cruise_slip_comp;
+            skid_correction = constrain_int16(skid_correction, -4500, 4500);    // constrain correction within the bounds of normal roll input
+        } else {
+            skid_correction = 0;
+        }
+
         // process pilot's pitch input, roll input is always zero.
         if (object_detect.enabled()){
-            wp_nav.set_pilot_desired_acceleration(0, loiter_correction);
+            wp_nav.set_pilot_desired_acceleration(skid_correction, loiter_correction);
         } else {
-            wp_nav.set_pilot_desired_acceleration(0, g.rc_2.control_in);
+            wp_nav.set_pilot_desired_acceleration(skid_correction, g.rc_2.control_in);
         }
 
         // get pilot's desired yaw rate, controlled by normal "roll" stick input.

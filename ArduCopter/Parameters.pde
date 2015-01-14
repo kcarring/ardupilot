@@ -448,6 +448,12 @@ const AP_Param::Info var_info[] PROGMEM = {
     GSCALAR(poshold_brake_angle_max, "PHLD_BRAKE_ANGLE",  POSHOLD_BRAKE_ANGLE_DEFAULT),
 #endif
 
+    // @Param: CRUISE_SLIP_COMP
+    // @DisplayName: Cruise Mode Side-Slip Correction
+    // @Description: The strength with which Cruise mode will attempt to stop a lateral skid.
+    // @User: Advanced
+    GSCALAR(cruise_slip_comp, "CRUISE_SLIP_COMP",  CRUISE_SLIP_COMP_DEFAULT),
+
     // @Param: LAND_REPOSITION
     // @DisplayName: Land repositioning
     // @Description: Enables user input during LAND mode, the landing phase of RTL, and auto mode landings.

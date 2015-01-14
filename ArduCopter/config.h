@@ -707,6 +707,10 @@
  # define POSHOLD_BRAKE_ANGLE_DEFAULT   3000    // default POSHOLD_BRAKE_ANGLE param value.  Max lean angle during braking in centi-degrees
 #endif
 
+#ifndef CRUISE_SLIP_COMP_DEFAULT
+ # define CRUISE_SLIP_COMP_DEFAULT   10.0f     // default CRUISE_SLIP_COMP param value.  
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 // Throttle control gains
 //
