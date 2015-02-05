@@ -96,6 +96,20 @@ static void loiter_run()
             target_climb_rate = get_throttle_surface_tracking(target_climb_rate, pos_control.get_alt_target(), G_Dt);
         }
 
+#if AC_FENCE == ENABLED
+        if ((fence.get_enabled_fences() & AC_FENCE_TYPE_CIRCLE) != 0){
+            // calculate stopping point
+            Vector3f fence_stop_point;
+            pos_control.get_stopping_point_xy(fence_stop_point);
+
+            // check if stopping point will be outside fence margin
+            // if yes, then command a full stop
+            if ( fence_check_xy(fence_stop_point) ){
+                pos_control.set_desired_velocity_xy(0.0f, 0.0f);
+            }
+        }
+#endif // AC_FENCE
+
         // update altitude target and call position controller
         pos_control.set_alt_target_from_climb_rate(target_climb_rate, G_Dt);
         pos_control.update_z_controller();

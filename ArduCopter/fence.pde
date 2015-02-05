@@ -55,6 +55,18 @@ void fence_check()
     }
 }
 
+// fence_check_xy - check if we are about to fly into the circular fence
+bool fence_check_xy(Vector3f check_location)
+{
+    int32_t  fence_check_distance = pythagorous2(check_location.x, check_location.y);
+    if ( fence_check_distance*0.01f >= fence.get_safe_distance() ){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 // fence_send_mavlink_status - send fence status to ground station
 static void fence_send_mavlink_status(mavlink_channel_t chan)
 {   
