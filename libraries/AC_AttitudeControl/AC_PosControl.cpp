@@ -647,18 +647,6 @@ void AC_PosControl::desired_vel_to_pos(float nav_dt)
         _pos_target.x += _vel_desired.x * nav_dt;
         _pos_target.y += _vel_desired.y * nav_dt;
     }
-
-    // If distance constraint is active, check if target point is moving beyond maximum distance
-    if (_distance_max > 0){
-        float target_dist_from_home = pythagorous2(_pos_target.x, _pos_target.y);
-        if (target_dist_from_home >= _distance_max) {
-            _pos_target.x = _pos_target.x/target_dist_from_home;
-            _pos_target.y = _pos_target.y/target_dist_from_home;
-            // also reduce velocity demand to zero so that velocity feedforward is zeroed
-            _vel_desired.x = 0.0f;
-            _vel_desired.y = 0.0f;
-        }
-    }
 }
 
 /// pos_to_rate_xy - horizontal position error to velocity controller
@@ -686,11 +674,24 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
         if (_distance_to_target > _leash && _distance_to_target > 0.0f) {
             _pos_target.x = curr_pos.x + _leash * _pos_error.x/_distance_to_target;
             _pos_target.y = curr_pos.y + _leash * _pos_error.y/_distance_to_target;
-            // re-calculate distance error
-            _pos_error.x = _pos_target.x - curr_pos.x;
-            _pos_error.y = _pos_target.y - curr_pos.y;
-            _distance_to_target = _leash;
         }
+
+        // If distance constraint is active, check if target point is moving beyond maximum distance
+        if (_distance_max > 0){
+            float target_dist_from_home = pythagorous2(_pos_target.x, _pos_target.y);
+            if (target_dist_from_home >= _distance_max) {
+                _pos_target.x = _pos_target.x/target_dist_from_home;
+                _pos_target.y = _pos_target.y/target_dist_from_home;
+                // also reduce velocity demand to zero so that velocity feedforward is zeroed
+                _vel_desired.x = 0.0f;
+                _vel_desired.y = 0.0f;
+            }
+        }
+
+        // re-calculate distance error
+        _pos_error.x = _pos_target.x - curr_pos.x;
+        _pos_error.y = _pos_target.y - curr_pos.y;
+        _distance_to_target = _leash;
 
         // calculate the distance at which we swap between linear and sqrt velocity response
         linear_distance = _accel_cms/(2.0f*kP*kP);
