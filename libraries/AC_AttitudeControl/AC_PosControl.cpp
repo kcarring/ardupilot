@@ -678,8 +678,8 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
 
         // If distance constraint is active, check if target point is moving beyond maximum distance
         if (_distance_max > 0){
-            float target_dist_from_home = pythagorous2(_pos_target.x, _pos_target.y);
-            if ( (target_dist_from_home + _leash) >= _distance_max) {
+            float target_dist_from_home = pythagorous2(_pos_target.x, _pos_target.y) + _leash;
+            if ( (target_dist_from_home) >= _distance_max) {
                 _pos_target.x = _pos_target.x*_distance_max/target_dist_from_home;
                 _pos_target.y = _pos_target.y*_distance_max/target_dist_from_home;
                 _vel_desired.x = 0;
