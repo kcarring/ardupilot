@@ -1146,6 +1146,11 @@ static void one_hz_loop()
     if ((fence.get_enabled_fences() & AC_FENCE_TYPE_ALT_MAX) != 0) {
         pos_control.set_alt_max(fence.get_safe_alt()*100.0f);
     }
+
+    // set fence distance limit in position controller
+    if ((fence.get_enabled_fences() & AC_FENCE_TYPE_CIRCLE) != 0) {
+        pos_control.set_distance_max(fence.get_safe_distance()*100.0f);
+    }
 #endif
 }
 
