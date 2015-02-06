@@ -682,6 +682,8 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
             if (target_dist_from_home >= _distance_max) {
                 _pos_target.x = _pos_target.x*_distance_max/target_dist_from_home;
                 _pos_target.y = _pos_target.y*_distance_max/target_dist_from_home;
+                _vel_desired.x = 0;
+                _vel_desired.y = 0;
                 _flags.external_limiting = true;
             } else {
                 _flags.external_limiting = false;
@@ -719,11 +721,9 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
                 _vel_target.y = POSCONTROL_VEL_XY_MAX_FROM_POS_ERR * _vel_target.y/vel_total;
             }
 
-            if (!_flags.external_limiting){
-                // add velocity feed-forward
-                _vel_target.x += _vel_desired.x;
-                _vel_target.y += _vel_desired.y;
-            }
+            // add velocity feed-forward
+            _vel_target.x += _vel_desired.x;
+            _vel_target.y += _vel_desired.y;
         } else {
             if (mode == XY_MODE_POS_AND_VEL_FF) {
                 // add velocity feed-forward
