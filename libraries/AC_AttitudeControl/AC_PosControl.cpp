@@ -647,6 +647,18 @@ void AC_PosControl::desired_vel_to_pos(float nav_dt)
         _pos_target.x += _vel_desired.x * nav_dt;
         _pos_target.y += _vel_desired.y * nav_dt;
     }
+
+    // If distance constraint is active, check if target point is moving beyond maximum distance
+    if (_distance_max > 0){
+        float target_dist_from_home = pythagorous2(_pos_target.x, _pos_target.y);
+        if (target_dist_from_home >= _distance_max) {
+            _pos_target.x = _pos_target.x/target_dist_from_home;
+            _pos_target.y = _pos_target.y/target_dist_from_home;
+            // also reduce velocity demand to zero so that velocity feedforward is zeroed
+            _vel_desired.x = 0.0f;
+            _vel_desired.y = 0.0f;
+        }
+    }
 }
 
 /// pos_to_rate_xy - horizontal position error to velocity controller
