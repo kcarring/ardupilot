@@ -278,6 +278,7 @@ private:
             uint8_t reset_accel_to_throttle : 1;    // 1 if we should reset the accel_to_throttle step of the z-axis controller
             uint8_t freeze_ff_xy    : 1;    // 1 use to freeze feed forward during step updates
             uint8_t freeze_ff_z     : 1;    // 1 use to freeze feed forward during step updates
+            uint8_t external_limiting       : 1;    // 1 if external parameter is limiting movement.
     } _flags;
 
     // limit flags structure
