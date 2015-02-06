@@ -682,6 +682,9 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
             if (target_dist_from_home >= _distance_max) {
                 _pos_target.x = _pos_target.x/target_dist_from_home;
                 _pos_target.y = _pos_target.y/target_dist_from_home;
+                _flags.external_limiting = true;
+            } else {
+                _flags.external_limiting = false;
             }
         }
 
