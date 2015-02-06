@@ -81,6 +81,10 @@ public:
     ///   set to zero to disable limit
     void set_alt_max(float alt) { _alt_max = alt; }
 
+    /// set_distance_max - sets maximum distance from home in cm
+    ///   set to zero to disable limit
+    void set_distance_max(float dist) { _distance_max = dist; }
+
     /// set_speed_z - sets maximum climb and descent rates
     ///     speed_down can be positive or negative but will always be interpreted as a descent speed
     ///     leash length will be recalculated the next time update_z_controller() is called
@@ -373,6 +377,7 @@ private:
     Vector3f    _accel_error;           // desired acceleration in cm/s/s  // To-Do: are xy actually required?
     Vector3f    _accel_feedforward;     // feedforward acceleration in cm/s/s
     float       _alt_max;               // max altitude - should be updated from the main code with altitude limit from fence
+    float       _distance_max;          // maximum distance from home - should be updated from the main code with distance limit from fence
     float       _distance_to_target;    // distance to position target - for reporting only
     LowPassFilterFloat _vel_error_filter;   // low-pass-filter on z-axis velocity error
     LowPassFilterFloat _accel_error_filter; // low-pass-filter on z-axis accelerometer error

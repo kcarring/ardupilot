@@ -49,6 +49,7 @@ AC_PosControl::AC_PosControl(const AP_AHRS& ahrs, const AP_InertialNav& inav,
     _roll_target(0.0f),
     _pitch_target(0.0f),
     _alt_max(0.0f),
+    _distance_max(0.0f),
     _distance_to_target(0.0f)
 {
     AP_Param::setup_object_defaults(this, var_info);
