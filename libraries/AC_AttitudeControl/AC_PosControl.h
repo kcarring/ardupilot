@@ -85,6 +85,9 @@ public:
     ///   set to zero to disable limit
     void set_distance_max(float dist) { _distance_max = dist; }
 
+    /// get_external_limiting - return status of _flags.external_limiting
+    bool get_external_limiting() const { return _flags.external_limiting;}
+
     /// set_speed_z - sets maximum climb and descent rates
     ///     speed_down can be positive or negative but will always be interpreted as a descent speed
     ///     leash length will be recalculated the next time update_z_controller() is called

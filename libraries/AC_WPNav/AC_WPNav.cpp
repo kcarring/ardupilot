@@ -227,10 +227,21 @@ void AC_WPNav::calc_loiter_desired_velocity(float nav_dt, float ekfGndSpdLimit)
         _loiter_accel_cms = _loiter_speed_cms/2.0f;
     }
 
-    // rotate pilot input to lat/lon frame
+    // get pos_control's feed forward velocity
+    Vector3f desired_vel = _pos_control.get_desired_velocity();
+
     Vector2f desired_accel;
-    desired_accel.x = (_pilot_accel_fwd_cms*_ahrs.cos_yaw() - _pilot_accel_rgt_cms*_ahrs.sin_yaw());
-    desired_accel.y = (_pilot_accel_fwd_cms*_ahrs.sin_yaw() + _pilot_accel_rgt_cms*_ahrs.cos_yaw());
+
+    if (_pos_control.get_external_limiting()){
+        // decelerate because external factor is trying to stop copter
+        float vel_normalizer = pythagorous2(desired_vel.x, desired_vel.y);
+        desired_accel.x = -_loiter_accel_cms*desired_vel.x/vel_normalizer;
+        desired_accel.y = -_loiter_accel_cms*desired_vel.y/vel_normalizer;
+    } else {
+        // rotate pilot input to lat/lon frame
+        desired_accel.x = (_pilot_accel_fwd_cms*_ahrs.cos_yaw() - _pilot_accel_rgt_cms*_ahrs.sin_yaw());
+        desired_accel.y = (_pilot_accel_fwd_cms*_ahrs.sin_yaw() + _pilot_accel_rgt_cms*_ahrs.cos_yaw());
+    }
 
     // calculate the difference
     Vector2f des_accel_diff = (desired_accel - _loiter_desired_accel);
@@ -244,9 +255,6 @@ void AC_WPNav::calc_loiter_desired_velocity(float nav_dt, float ekfGndSpdLimit)
     }
     // adjust the desired acceleration
     _loiter_desired_accel += des_accel_diff;
-
-    // get pos_control's feed forward velocity
-    Vector3f desired_vel = _pos_control.get_desired_velocity();
 
     // add pilot commanded acceleration
     desired_vel.x += _loiter_desired_accel.x * nav_dt;
