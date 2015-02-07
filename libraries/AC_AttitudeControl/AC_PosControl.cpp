@@ -719,9 +719,11 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
                 _vel_target.y = POSCONTROL_VEL_XY_MAX_FROM_POS_ERR * _vel_target.y/vel_total;
             }
 
-            // add velocity feed-forward
-            _vel_target.x += _vel_desired.x;
-            _vel_target.y += _vel_desired.y;
+            if (!_flags.external_limiting){
+                // add velocity feed-forward
+                _vel_target.x += _vel_desired.x;
+                _vel_target.y += _vel_desired.y;
+            }
         } else {
             if (mode == XY_MODE_POS_AND_VEL_FF) {
                 // add velocity feed-forward
