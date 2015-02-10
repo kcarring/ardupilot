@@ -250,6 +250,10 @@ static void init_ardupilot()
     init_sonar();
 #endif
 
+#if OBJECTAVOIDANCE == ENABLED
+    init_object_avoidance();
+#endif
+
     // initialise mission library
     mission.init();
 
