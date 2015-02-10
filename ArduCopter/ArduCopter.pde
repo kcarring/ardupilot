@@ -133,6 +133,7 @@
 #include <AP_ServoRelayEvents.h>
 #include <AP_Camera.h>          // Photo or video camera
 #include <AP_Mount.h>           // Camera/Antenna mount
+#include <AP_ObjectAvoidance.h> // External object detect and avoid library
 #include <AP_Airspeed.h>        // needed for AHRS build
 #include <AP_Vehicle.h>         // needed for AHRS build
 #include <AP_InertialNav.h>     // ArduPilot Mega inertial navigation library
@@ -710,6 +711,14 @@ static AP_LandingGear landinggear;
 AP_Terrain terrain(ahrs, mission, rally);
 #endif
 
+///////////////////////////////////////////////////////////////////
+// Object Avoidance
+#if OBJECTAVOIDANCE == ENABLED
+static RangeFinder object_scanner;
+static AP_ObjectAvoidance object_avoidance(ahrs, object_scanner);
+#endif
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // function definitions to keep compiler from complaining about undeclared functions
 ////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +781,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { update_copter_leds,   40,      5 },
 #endif
     { update_mount,          8,     45 },
+    { update_object_avoidance,  8,     45 },
     { ten_hz_logging_loop,  40,     30 },
     { fifty_hz_logging_loop, 8,     22 },
     { perf_update,        4000,     20 },

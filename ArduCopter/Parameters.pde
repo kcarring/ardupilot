@@ -1031,6 +1031,13 @@ const AP_Param::Info var_info[] PROGMEM = {
     GOBJECT(terrain,                "TERRAIN_", AP_Terrain),
 #endif
 
+#if OBJECTAVOIDANCE == ENABLED
+    // @Group: OBJ_
+    // @Path: ../libraries/AP_ObjectAvoidance/AP_ObjectAvoidance.cpp
+    GOBJECT(object_avoidance,           "OBJ_", AP_ObjectAvoidance),
+#endif
+
+
 #if OPTFLOW == ENABLED
     // @Group: FLOW
     // @Path: ../libraries/AP_OpticalFlow/OpticalFlow.cpp
