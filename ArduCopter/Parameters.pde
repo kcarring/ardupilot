@@ -1031,10 +1031,10 @@ const AP_Param::Info var_info[] PROGMEM = {
     GOBJECT(terrain,                "TERRAIN_", AP_Terrain),
 #endif
 
-#if OBJECTAVOIDANCE == ENABLED
-    // @Group: OBJ_
-    // @Path: ../libraries/AP_ObjectAvoidance/AP_ObjectAvoidance.cpp
-    GOBJECT(object_avoidance,           "OBJ_", AP_ObjectAvoidance),
+#if OBJECTSCANNER == ENABLED
+    // @Group: OS_
+    // @Path: ../libraries/AP_ObjectScanner/AP_ObjectScanner.cpp
+    GOBJECT(object_scanner,           "OS_", AP_ObjectScanner),
 #endif
 
 
