@@ -1,7 +1,7 @@
 // -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 
-#ifndef __AP_OBJECTAVOIDANCE_H__
-#define __AP_OBJECTAVOIDANCE_H__
+#ifndef __AP_OBJECTSCANNER_H__
+#define __AP_OBJECTSCANNER_H__
 
 // Dependencies
 #include <AP_Math.h>
@@ -10,23 +10,23 @@
 #include <AP_RangeFinder.h>     // Range finder library
 #include <RC_Channel.h>         // RC Channel Library
 
-#define OA_DISABLED 0
-#define OA_ENABLED 1
+#define OS_DISABLED 0
+#define OS_ENABLED 1
 
-#define SCANNER_STAB_TILT_DEFAULT       OA_DISABLED    // Default object scanner tilt stabilization function
-#define SCANNER_STAB_PAN_DEFAULT        OA_DISABLED    // Default object scanner pan stabilization function
-#define SCANNER_SWEEP_TILT_DEFUALT      OA_DISABLED    // Default object scanner tilt sweep function
-#define SCANNER_SWEEP_PAN_DEFUALT       OA_DISABLED    // Default object scanner pan sweep function
+#define SCANNER_STAB_TILT_DEFAULT       OS_DISABLED    // Default object scanner tilt stabilization function
+#define SCANNER_STAB_PAN_DEFAULT        OS_DISABLED    // Default object scanner pan stabilization function
+#define SCANNER_SWEEP_TILT_DEFUALT      OS_DISABLED    // Default object scanner tilt sweep function
+#define SCANNER_SWEEP_PAN_DEFUALT       OS_DISABLED    // Default object scanner pan sweep function
 #define SCANNER_SERVO_PWM_RANGE_DEFAULT 900         // Default object scanner servo range, 900 is typical for hobby servos moving 90 degrees9
 
 #define BUFFER_DEFAULT                  2.0f        // Default safety buffer around copter
 #define SCANNER_SWEEP_HZ_DEFAULT        1           // Default object scanner sweeping frequency
 
-class AP_ObjectAvoidance
+class AP_ObjectScanner
 {
 public:
     //Constructor
-    AP_ObjectAvoidance(const AP_AHRS &ahrs, RangeFinder &object_scanner);
+    AP_ObjectScanner(const AP_AHRS &ahrs, RangeFinder &object_rangefinder);
 
     // initialization procedure.
     void    init(float delta_sec);
@@ -89,4 +89,4 @@ private:
 
 };
 
-#endif // __AP_OBJECT_AVOIDANCE_H__
+#endif // __AP_OBJECTSCANNER_H__

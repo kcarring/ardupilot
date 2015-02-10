@@ -3,30 +3,30 @@
 #include <AP_Common.h>
 #include <AP_Progmem.h>
 #include <AP_Param.h>
-#include <AP_ObjectAvoidance.h>
+#include <AP_ObjectScanner.h>
 
-const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
+const AP_Param::GroupInfo AP_ObjectScanner::var_info[] PROGMEM = {
 
     // @Param: ENABLED
     // @DisplayName: Object Scanner Enable
     // @Description: Enable object scanner
     // @Values: 0:Disabled,1:Enabled
     // @User: Standard
-    AP_GROUPINFO("ENABLED", 1, AP_ObjectAvoidance, _enabled,  OA_DISABLED),
+    AP_GROUPINFO("ENABLED", 1, AP_ObjectScanner, _enabled,  OS_DISABLED),
 
     // @Param: STAB_TILT
     // @DisplayName: Object Scanner Stabilize Tilt Angle
     // @Description: Enable tilt stabilisation relative to Earth
     // @Values: 0:Disabled,1:Enabled, -1:Enabled Reverse
     // @User: Standard
-    AP_GROUPINFO("STAB_TILT", 2, AP_ObjectAvoidance, _stab_tilt,  SCANNER_STAB_TILT_DEFAULT),
+    AP_GROUPINFO("STAB_TILT", 2, AP_ObjectScanner, _stab_tilt,  SCANNER_STAB_TILT_DEFAULT),
 
     // @Param: STAB_PAN
     // @DisplayName: Object Scanner Stabilize Pan Angle
     // @Description: Enable pan targeting relative to flight path
     // @Values: 0:Disabled,1:Enabled
     // @User: Standard
-    AP_GROUPINFO("STAB_PAN",   3, AP_ObjectAvoidance, _stab_pan,  SCANNER_STAB_PAN_DEFAULT),
+    AP_GROUPINFO("STAB_PAN",   3, AP_ObjectScanner, _stab_pan,  SCANNER_STAB_PAN_DEFAULT),
 
     // @Param: ANGMIN_TIL
     // @DisplayName: Minimum tilt angle
@@ -35,7 +35,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: -90 90
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("ANGMIN_TIL", 4, AP_ObjectAvoidance, _tilt_angle_min, -45.0f),
+    AP_GROUPINFO("ANGMIN_TIL", 4, AP_ObjectScanner, _tilt_angle_min, -45.0f),
 
     // @Param: ANGMAX_TIL
     // @DisplayName: Maximum tilt angle
@@ -44,7 +44,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: -90 90
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("ANGMAX_TIL", 5, AP_ObjectAvoidance, _tilt_angle_max, 45.0f),
+    AP_GROUPINFO("ANGMAX_TIL", 5, AP_ObjectScanner, _tilt_angle_max, 45.0f),
 
     // @Param: TILT_PWM_RNG
     // @DisplayName: Tilt PWM Range
@@ -53,7 +53,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 0 1100
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("TILT_PWM_RNG", 6, AP_ObjectAvoidance, _tilt_angle_pwm_range, SCANNER_SERVO_PWM_RANGE_DEFAULT),
+    AP_GROUPINFO("TILT_PWM_RNG", 6, AP_ObjectScanner, _tilt_angle_pwm_range, SCANNER_SERVO_PWM_RANGE_DEFAULT),
 
     // @Param: TRIM_TILT
     // @DisplayName: Tilt Trim
@@ -62,7 +62,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 1250 1750
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("TRIM_TILT", 7, AP_ObjectAvoidance, _tilt_trim, 1500),
+    AP_GROUPINFO("TRIM_TILT", 7, AP_ObjectScanner, _tilt_trim, 1500),
 
     // @Param: ANGMIN_PAN
     // @DisplayName: Minimum pan angle
@@ -71,7 +71,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: -180 0
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("ANGMIN_PAN",  8, AP_ObjectAvoidance, _pan_angle_min,  -45.0f),
+    AP_GROUPINFO("ANGMIN_PAN",  8, AP_ObjectScanner, _pan_angle_min,  -45.0f),
 
     // @Param: ANGMAX_PAN
     // @DisplayName: Maximum pan angle
@@ -80,7 +80,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 0 180
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("ANGMAX_PAN",  9, AP_ObjectAvoidance, _pan_angle_max,  45.0f),
+    AP_GROUPINFO("ANGMAX_PAN",  9, AP_ObjectScanner, _pan_angle_max,  45.0f),
 
     // @Param: PAN_PWM_RNG
     // @DisplayName: Pan PWM Range
@@ -89,7 +89,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 0 1100
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("PAN_PWM_RNG", 10, AP_ObjectAvoidance, _pan_angle_pwm_range, SCANNER_SERVO_PWM_RANGE_DEFAULT),
+    AP_GROUPINFO("PAN_PWM_RNG", 10, AP_ObjectScanner, _pan_angle_pwm_range, SCANNER_SERVO_PWM_RANGE_DEFAULT),
 
     // @Param: TRIM_PAN
     // @DisplayName: Pan Trim
@@ -98,7 +98,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 1250 1750
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("TRIM_PAN", 11, AP_ObjectAvoidance, _pan_trim, 1500),
+    AP_GROUPINFO("TRIM_PAN", 11, AP_ObjectScanner, _pan_trim, 1500),
 
     // @Param: SWEEP_HZ
     // @DisplayName: Sweep Frequency
@@ -107,7 +107,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 0 400
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("SWEEP_HZ", 12, AP_ObjectAvoidance, _sweep_hz, SCANNER_SWEEP_HZ_DEFAULT),
+    AP_GROUPINFO("SWEEP_HZ", 12, AP_ObjectScanner, _sweep_hz, SCANNER_SWEEP_HZ_DEFAULT),
 
     // @Param: SWEEP_TILT
     // @DisplayName: Sweep scanner tilt angle
@@ -116,7 +116,7 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 0 90
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("SWEEP_TILT", 13, AP_ObjectAvoidance, _sweep_tilt, OA_DISABLED),
+    AP_GROUPINFO("SWEEP_TILT", 13, AP_ObjectScanner, _sweep_tilt, OS_DISABLED),
 
     // @Param: SWEEP_PAN
     // @DisplayName: Sweep scanner pan angle
@@ -125,14 +125,14 @@ const AP_Param::GroupInfo AP_ObjectAvoidance::var_info[] PROGMEM = {
     // @Range: 0 90
     // @Increment: 1
     // @User: Standard
-    AP_GROUPINFO("SWEEP_PAN", 14, AP_ObjectAvoidance, _sweep_pan, OA_DISABLED),
+    AP_GROUPINFO("SWEEP_PAN", 14, AP_ObjectScanner, _sweep_pan, OS_DISABLED),
 
     AP_GROUPEND
 };
 
-AP_ObjectAvoidance::AP_ObjectAvoidance(const AP_AHRS &ahrs, RangeFinder &object_scanner) :
+AP_ObjectScanner::AP_ObjectScanner(const AP_AHRS &ahrs, RangeFinder &object_rangefinder) :
     _ahrs(ahrs),
-    _object_scanner(object_scanner),
+    _object_scanner(object_rangefinder),
     _sweep_phase(0),
     _sweep_value(0)
 {
@@ -140,14 +140,14 @@ AP_ObjectAvoidance::AP_ObjectAvoidance(const AP_AHRS &ahrs, RangeFinder &object_
 }
 
 // Initialize
-void AP_ObjectAvoidance::init(float delta_sec)
+void AP_ObjectScanner::init(float delta_sec)
 {
     _dt = delta_sec;
     calc_scalars();
 }
 
 // Initialize
-void AP_ObjectAvoidance::calc_scalars()
+void AP_ObjectScanner::calc_scalars()
 {
     // avoid divide by zero
     if (_tilt_angle_pwm_range == 0){
@@ -163,7 +163,7 @@ void AP_ObjectAvoidance::calc_scalars()
 }
 
 /// This one should be called periodically
-void AP_ObjectAvoidance::update_objectscanner_position()
+void AP_ObjectScanner::update_objectscanner_position()
 {
 
     float           tilt_sweep_angle;          // sweep action tilt angle
@@ -237,14 +237,14 @@ void AP_ObjectAvoidance::update_objectscanner_position()
 }
 
 // function to reset scanner distance capture.
-void    AP_ObjectAvoidance::reset_scanner_capture()
+void    AP_ObjectScanner::reset_scanner_capture()
 {
     _last_object_distance = _object_distance;
     _object_distance = _scanner_reading;
 }
 
 // accessor to get the current distance measurement
-uint16_t AP_ObjectAvoidance::get_object_distance()
+uint16_t AP_ObjectScanner::get_object_distance()
 {
     return min(_object_distance, _last_object_distance);
 }
