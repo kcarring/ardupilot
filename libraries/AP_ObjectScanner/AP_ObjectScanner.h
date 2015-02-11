@@ -13,14 +13,14 @@
 #define OS_DISABLED 0
 #define OS_ENABLED 1
 
-#define SCANNER_STAB_TILT_DEFAULT       OS_DISABLED    // Default object scanner tilt stabilization function
-#define SCANNER_STAB_PAN_DEFAULT        OS_DISABLED    // Default object scanner pan stabilization function
-#define SCANNER_SWEEP_TILT_DEFUALT      OS_DISABLED    // Default object scanner tilt sweep function
-#define SCANNER_SWEEP_PAN_DEFUALT       OS_DISABLED    // Default object scanner pan sweep function
-#define SCANNER_SERVO_PWM_RANGE_DEFAULT 900         // Default object scanner servo range, 900 is typical for hobby servos moving 90 degrees9
-
-#define BUFFER_DEFAULT                  2.0f        // Default safety buffer around copter
-#define SCANNER_SWEEP_HZ_DEFAULT        1           // Default object scanner sweeping frequency
+#define SCANNER_STAB_TILT_DEFAULT               OS_DISABLED     // Default object scanner tilt stabilization function
+#define SCANNER_TARG_PAN_DEFAULT                OS_DISABLED     // Default object scanner pan stabilization function
+#define SCANNER_SWEEP_TILT_DEFUALT              OS_DISABLED     // Default object scanner tilt sweep function
+#define SCANNER_SWEEP_PAN_DEFUALT               OS_DISABLED     // Default object scanner pan sweep function
+#define SCANNER_SERVO_PWM_RANGE_DEFAULT         900             // Default object scanner servo range, 900 is typical for hobby servos moving 90 degrees
+#define SCANNER_SERVO_PWM_RESOLUTION_DEFAULT    0.1f            // Default object scanner servo resolution for typical hobby servo
+#define SCANNER_SWEEP_HZ_DEFAULT                1               // Default object scanner sweeping frequency
+#define SCANNER_SWEEP_DT_DEFAULT                0.02f           // Default object scanner operating frequency, 50Hz
 
 class AP_ObjectScanner
 {
@@ -73,7 +73,7 @@ private:
     // EEPROM parameters
     AP_Int8                         _enabled;               // (1 = enabled, 0 = disabled)
     AP_Int8                         _stab_tilt;             // (1 = yes, 0 = no, -1 = reverse)
-    AP_Int8                         _stab_pan;              // (1 = yes, 0 = no)
+    AP_Int8                         _target_pan;            // (1 = yes, 0 = no)
 
     AP_Float                        _tilt_angle_min;        // min angle limit of actuated surface in 0.01 degree units
     AP_Float                        _tilt_angle_max;        // max angle limit of actuated surface in 0.01 degree units
