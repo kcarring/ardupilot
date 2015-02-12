@@ -254,6 +254,10 @@ static void init_ardupilot()
     init_object_scanner();
 #endif
 
+#if OBJECTAVOIDANCE == ENABLED
+    init_object_avoidance();
+#endif
+
     // initialise mission library
     mission.init();
 

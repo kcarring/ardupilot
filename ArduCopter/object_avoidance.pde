@@ -18,3 +18,11 @@ static void init_object_scanner(void)
     object_scanner.init(0.02);
 }
 #endif
+
+#if OBJECTAVOIDANCE == ENABLED
+static void init_object_avoidance(void)
+{
+    // Initilize the object avoidance algorithm to run at the same rate as Position Controller
+    object_avoidance.init(MAIN_LOOP_SECONDS);
+}
+#endif

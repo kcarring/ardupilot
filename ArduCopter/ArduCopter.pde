@@ -133,7 +133,8 @@
 #include <AP_ServoRelayEvents.h>
 #include <AP_Camera.h>          // Photo or video camera
 #include <AP_Mount.h>           // Camera/Antenna mount
-#include <AP_ObjectScanner.h> // External object detect and avoid library
+#include <AP_ObjectScanner.h>   // External object scanner utilizing a rangefinder
+#include <AP_ObjectAvoidance.h> // External object avoidance using position controller
 #include <AP_Airspeed.h>        // needed for AHRS build
 #include <AP_Vehicle.h>         // needed for AHRS build
 #include <AP_InertialNav.h>     // ArduPilot Mega inertial navigation library
@@ -716,6 +717,12 @@ AP_Terrain terrain(ahrs, mission, rally);
 #if OBJECTSCANNER == ENABLED
 static RangeFinder object_rangefinder;
 static AP_ObjectScanner object_scanner(ahrs, object_rangefinder);
+#endif
+
+///////////////////////////////////////////////////////////////////
+// Object Avoidance
+#if OBJECTAVOIDANCE == ENABLED
+static AP_ObjectAvoidance object_avoidance(object_scanner, fence);
 #endif
 
 
