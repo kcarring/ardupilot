@@ -43,6 +43,12 @@ public:
     // enabled - returns true if object scanner is enabled
     bool enabled() const { return _enabled; }
 
+    // enabled - returns true if object scanner is healthy
+    bool active() const {return (_enabled && _healthy); }
+
+    // get_scanner_max_distance - returns maximum safe measuring distance of object rangefinder.
+    int16_t get_scanner_max_distance() const {return _rangefinder_max_distance;}
+
     // hook for eeprom variables
     static const struct AP_Param::GroupInfo        var_info[];
 
@@ -50,19 +56,22 @@ private:
 
     //members
     const AP_AHRS                   &_ahrs;                     // Rotation matrix from earth to plane.
-    RangeFinder                     &_object_scanner;           // Object Scanning Lidar or Sonar.
+    RangeFinder                     &_object_rangefinder;       // Object Scanning Lidar or Sonar.
 
     bool                            _sweep_phase;               // True if sweep_increment is between Pi and 2Pi
+    bool                            _healthy;                   // current status of scanner system
 
     float                           _dt;                        // time step of loop
     float                           _sweep_increment;           // radians
     float                           _tilt_angle_pwm_resolution; // resolution of tilt servo, degrees per PWM
     float                           _pan_angle_pwm_resolution;  // resolution of pan servo, degrees per PWM
-    float                           _sweep_value;             // radians
+    float                           _sweep_value;               // radians
+
+    int16_t                         _rangefinder_max_distance;      // rangefinder max distance
 
     uint16_t                        _object_distance;           // closest object during current scan cycle
     uint16_t                        _last_object_distance;      // closest object during last scan cycle
-    uint16_t                        _scanner_reading;           // current scanner reading
+    uint16_t                        _rangefinder_reading;           // current scanner reading
 
     // function to reset scanner distance capture
     void    reset_scanner_capture();

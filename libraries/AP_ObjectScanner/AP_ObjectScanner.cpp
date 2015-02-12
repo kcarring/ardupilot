@@ -132,7 +132,7 @@ const AP_Param::GroupInfo AP_ObjectScanner::var_info[] PROGMEM = {
 
 AP_ObjectScanner::AP_ObjectScanner(const AP_AHRS &ahrs, RangeFinder &object_rangefinder) :
     _ahrs(ahrs),
-    _object_scanner(object_rangefinder),
+    _object_rangefinder(object_rangefinder),
     _dt(SCANNER_SWEEP_DT_DEFAULT),
     _sweep_phase(0),
     _sweep_value(0),
@@ -141,7 +141,7 @@ AP_ObjectScanner::AP_ObjectScanner(const AP_AHRS &ahrs, RangeFinder &object_rang
     _pan_angle_pwm_resolution(SCANNER_SERVO_PWM_RESOLUTION_DEFAULT),
     _object_distance(0),
     _last_object_distance(0),
-    _scanner_reading(0)
+    _rangefinder_reading(0)
 {
 	AP_Param::setup_object_defaults(this, var_info);
 }
@@ -151,6 +151,7 @@ void AP_ObjectScanner::init(float delta_sec)
 {
     _dt = delta_sec;
     calc_scalars();
+    _rangefinder_max_distance = _object_rangefinder.max_distance_cm();
 }
 
 // Initialize
@@ -178,17 +179,16 @@ void AP_ObjectScanner::update_objectscanner_position()
     float           tilt_stab_angle;           // stabilize tilt angle
     float           pan_targ_angle;            // stabilize pan angle
 
-    _object_scanner.update();
+    _object_rangefinder.update();
 
-    // exit immediately if scanner is disabled
-    // if (!_object_scanner.healthy()) {
-    //    return;
-    // }
+    // check if scanner is healthy
+    // ToDo: Probably should do something if it's not
+    _healthy = _object_rangefinder.healthy();
 
-    _scanner_reading = _object_scanner.distance_cm();
+    _rangefinder_reading = _object_rangefinder.distance_cm();
 
-    if (_scanner_reading < _object_distance){
-        _object_distance = _scanner_reading;
+    if (_rangefinder_reading < _object_distance){
+        _object_distance = _rangefinder_reading;
     }
 
     _sweep_value += _sweep_increment;
@@ -247,7 +247,7 @@ void AP_ObjectScanner::update_objectscanner_position()
 void    AP_ObjectScanner::reset_scanner_capture()
 {
     _last_object_distance = _object_distance;
-    _object_distance = _scanner_reading;
+    _object_distance = _rangefinder_reading;
 }
 
 // accessor to get the current distance measurement
