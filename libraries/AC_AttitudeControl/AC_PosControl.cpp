@@ -23,7 +23,7 @@ const AP_Param::GroupInfo AC_PosControl::var_info[] PROGMEM = {
 AC_PosControl::AC_PosControl(const AP_AHRS& ahrs, const AP_InertialNav& inav,
                              const AP_Motors& motors, AC_AttitudeControl& attitude_control,
                              AC_P& p_alt_pos, AC_P& p_alt_rate, AC_PID& pid_alt_accel,
-                             AC_P& p_pos_xy, AC_PID& pid_rate_lat, AC_PID& pid_rate_lon) :
+                             AC_P& p_pos_xy, AC_PID& pid_rate_lat, AC_PID& pid_rate_lon, const AP_ObjectAvoidance& object_avoidance) :
     _ahrs(ahrs),
     _inav(inav),
     _motors(motors),
@@ -34,6 +34,7 @@ AC_PosControl::AC_PosControl(const AP_AHRS& ahrs, const AP_InertialNav& inav,
     _p_pos_xy(p_pos_xy),
     _pid_rate_lat(pid_rate_lat),
     _pid_rate_lon(pid_rate_lon),
+    _object_avoidance(object_avoidance),
     _dt(POSCONTROL_DT_10HZ),
     _dt_xy(POSCONTROL_DT_50HZ),
     _last_update_xy_ms(0),
@@ -673,11 +674,14 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
         if (_distance_to_target > _leash && _distance_to_target > 0.0f) {
             _pos_target.x = curr_pos.x + _leash * _pos_error.x/_distance_to_target;
             _pos_target.y = curr_pos.y + _leash * _pos_error.y/_distance_to_target;
-            // re-calculate distance error
-            _pos_error.x = _pos_target.x - curr_pos.x;
-            _pos_error.y = _pos_target.y - curr_pos.y;
-            _distance_to_target = _leash;
         }
+
+        _object_avoidance.target_position_clearance_xy(_pos_target);
+
+        // re-calculate distance error
+        _pos_error.x = _pos_target.x - curr_pos.x;
+        _pos_error.y = _pos_target.y - curr_pos.y;
+        _distance_to_target = _leash;
 
         // calculate the distance at which we swap between linear and sqrt velocity response
         linear_distance = _accel_cms/(2.0f*kP*kP);

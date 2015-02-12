@@ -11,6 +11,7 @@
 #include <AC_AttitudeControl.h> // Attitude control library
 #include <AP_Motors.h>          // motors library
 #include <AP_Vehicle.h>         // common vehicle parameters
+#include <AP_ObjectAvoidance.h> // object avoidance library
 
 
 // position controller default definitions
@@ -50,7 +51,7 @@ public:
     AC_PosControl(const AP_AHRS& ahrs, const AP_InertialNav& inav,
                   const AP_Motors& motors, AC_AttitudeControl& attitude_control,
                   AC_P& p_alt_pos, AC_P& p_alt_rate, AC_PID& pid_alt_accel,
-                  AC_P& p_pos_xy, AC_PID& pid_rate_lat, AC_PID& pid_rate_lon);
+                  AC_P& p_pos_xy, AC_PID& pid_rate_lat, AC_PID& pid_rate_lon, const AP_ObjectAvoidance& object_avoidance);
 
     // xy_mode - specifies behavior of xy position controller
     enum xy_mode {
@@ -340,6 +341,9 @@ private:
     AC_P&	    _p_pos_xy;
     AC_PID&	    _pid_rate_lat;
     AC_PID&	    _pid_rate_lon;
+
+    // reference to object avoidance library
+    const AP_ObjectAvoidance&   _object_avoidance;
 
     // parameters
     AP_Float    _throttle_hover;        // estimated throttle required to maintain a level hover
