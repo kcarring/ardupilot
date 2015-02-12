@@ -608,6 +608,26 @@ static AP_InertialNav inertial_nav(ahrs, barometer, gps_glitch, baro_glitch);
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// AC_Fence library to reduce fly-aways
+////////////////////////////////////////////////////////////////////////////////
+#if AC_FENCE == ENABLED
+AC_Fence    fence(&inertial_nav);
+#endif
+
+///////////////////////////////////////////////////////////////////
+// Object Scanner
+#if OBJECTSCANNER == ENABLED
+static RangeFinder object_rangefinder;
+static AP_ObjectScanner object_scanner(ahrs, object_rangefinder);
+#endif
+
+///////////////////////////////////////////////////////////////////
+// Object Avoidance
+#if OBJECTAVOIDANCE == ENABLED
+static AP_ObjectAvoidance object_avoidance(object_scanner, fence, inertial_nav);
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
 // Attitude, Position and Waypoint navigation objects
 // To-Do: move inertial nav up or other navigation variables down here
 ////////////////////////////////////////////////////////////////////////////////
@@ -620,7 +640,7 @@ AC_AttitudeControl attitude_control(ahrs, aparm, motors, g.p_stabilize_roll, g.p
 #endif
 AC_PosControl pos_control(ahrs, inertial_nav, motors, attitude_control,
                         g.p_alt_hold, g.p_throttle_rate, g.pid_throttle_accel,
-                        g.p_loiter_pos, g.pid_loiter_rate_lat, g.pid_loiter_rate_lon);
+                        g.p_loiter_pos, g.pid_loiter_rate_lat, g.pid_loiter_rate_lon, object_avoidance);
 static AC_WPNav wp_nav(inertial_nav, ahrs, pos_control, attitude_control);
 static AC_Circle circle_nav(inertial_nav, ahrs, pos_control);
 
@@ -667,13 +687,6 @@ static AP_Mount camera_mount(ahrs, current_loc);
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// AC_Fence library to reduce fly-aways
-////////////////////////////////////////////////////////////////////////////////
-#if AC_FENCE == ENABLED
-AC_Fence    fence(&inertial_nav);
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
 // Rally library
 ////////////////////////////////////////////////////////////////////////////////
 #if AC_RALLY == ENABLED
@@ -710,19 +723,6 @@ static AP_LandingGear landinggear;
 // terrain handling
 #if AP_TERRAIN_AVAILABLE
 AP_Terrain terrain(ahrs, mission, rally);
-#endif
-
-///////////////////////////////////////////////////////////////////
-// Object Scanner
-#if OBJECTSCANNER == ENABLED
-static RangeFinder object_rangefinder;
-static AP_ObjectScanner object_scanner(ahrs, object_rangefinder);
-#endif
-
-///////////////////////////////////////////////////////////////////
-// Object Avoidance
-#if OBJECTAVOIDANCE == ENABLED
-static AP_ObjectAvoidance object_avoidance(object_scanner, fence);
 #endif
 
 
