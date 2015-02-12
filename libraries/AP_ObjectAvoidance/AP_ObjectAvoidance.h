@@ -13,6 +13,8 @@
 #define OA_DISABLED 0
 #define OA_ENABLED  1
 
+#define OA_BUFFER_DEFAULT                           2.0f    // default distance in meters that autopilot should maintain from fence and objects
+
 // bit masks for enabled object avoidance functions
 #define OA_ENABLE_TYPE_NONE                         0       // no object avoidance
 #define OA_ENABLE_TYPE_FENCE                        1       // avoid fence objects
@@ -28,7 +30,7 @@ class AP_ObjectAvoidance
 {
 public:
     //Constructor
-    AP_ObjectAvoidance(const AP_ObjectScanner &object_scanner, const AC_Fence &fence);
+    AP_ObjectAvoidance(const AP_ObjectScanner &object_scanner, const AC_Fence &fence, const AP_InertialNav& inav);
 
     // initialization procedure.
     void    init(float delta_sec);
@@ -42,13 +44,21 @@ public:
     // hook for eeprom variables
     static const struct AP_Param::GroupInfo        var_info[];
 
+    // Determine if new desired position needs to be constrained
+    // Takes a target position, and checks if it violates a fence or object
+    // Returns target position untouched, or modified to avoid the fence or object
+    void target_position_clearance_xy(Vector3f& pos_target) const;
+
 private:
 
     //members
     const AP_ObjectScanner          &_object_scanner;           // object detecting sanning rangefinder
     const AC_Fence                  &_fence;                    // geo-fence
+    const AP_InertialNav            &_inav;                     
 
     uint8_t                         _enabled_fences;            // which type of fences are enabled (ie: altitude and/or circle)
+
+    int16_t                         _scanner_max_distance;      // maximum range of object scanner
 
     float                           _dt;                        // time step of loop
     float                           _fence_radius;              // fence radius in meters
@@ -58,6 +68,7 @@ private:
 
     // EEPROM parameters
     AP_Int8                         _enabled;                   // (1 = enabled, 0 = disabled)
+    AP_Float                        _buffer_distance;           // distance to maintain from fence and objects
 };
 
 #endif // __AP_OBJECTAVOIDANCE_H__
