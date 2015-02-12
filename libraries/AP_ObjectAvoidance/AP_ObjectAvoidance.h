@@ -62,13 +62,14 @@ private:
 
     float                           _dt;                        // time step of loop
     float                           _fence_radius;              // fence radius in meters
+    float                           _distance_max;              // maximum distance from home we can travel in meters
 
     bool                            _fence_enabled;             // status of fence enabled
     bool                            _scanner_enabled;           // status of object scanner enabled
 
     // EEPROM parameters
     AP_Int8                         _enabled;                   // (1 = enabled, 0 = disabled)
-    AP_Float                        _buffer_distance;           // distance to maintain from fence and objects
+    AP_Float                        _buffer_distance;           // distance to maintain from fence and objects in meters
 };
 
 #endif // __AP_OBJECTAVOIDANCE_H__

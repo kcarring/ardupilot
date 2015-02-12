@@ -43,6 +43,7 @@ void AP_ObjectAvoidance::init(float delta_sec)
     _dt = delta_sec;
     _enabled_fences = _fence.get_enabled_fences();
     _fence_radius = _fence.get_circle_radius();
+    _distance_max = _fence_radius - _buffer_distance;
 
     _scanner_enabled = _object_scanner.enabled();
     _scanner_max_distance = _object_scanner.get_scanner_max_distance();
@@ -55,4 +56,12 @@ void AP_ObjectAvoidance::target_position_clearance_xy(Vector3f& pos_target) cons
 {
     const Vector3f& current_position = _inav.get_position();
 
+    if (_enabled){
+        // divide by 100 because pos_target is in cm, fence distance and buffer are in meters
+        float target_dist_from_home = (pythagorous2(pos_target.x, pos_target.y))/100;
+        if ( (target_dist_from_home) >= _distance_max) {
+            pos_target.x = pos_target.x*_distance_max/target_dist_from_home;
+            pos_target.y = pos_target.y*_distance_max/target_dist_from_home;
+        }
+    }
 }
