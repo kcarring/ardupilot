@@ -1037,6 +1037,12 @@ const AP_Param::Info var_info[] PROGMEM = {
     GOBJECT(object_scanner,           "OS_", AP_ObjectScanner),
 #endif
 
+#if OBJECTAVOIDANCE == ENABLED
+    // @Group: OA_
+    // @Path: ../libraries/AP_ObjectAvoidance/AP_ObjectAvoidance.cpp
+    GOBJECT(object_avoidance,           "OA_", AP_ObjectAvoidance),
+#endif
+
 
 #if OPTFLOW == ENABLED
     // @Group: FLOW

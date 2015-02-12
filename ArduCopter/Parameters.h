@@ -128,6 +128,7 @@ public:
         k_param_dcmcheck_thresh,        // 59
         k_param_log_bitmask,
         k_param_object_scanner,
+        k_param_object_avoidance,
 
         // 65: AP_Limits Library
         k_param_limits = 65,            // deprecated - remove
