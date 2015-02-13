@@ -47,7 +47,7 @@ public:
     // Determine if new desired position needs to be constrained
     // Takes a target position, and checks if it violates a fence or object
     // Returns target position untouched, or modified to avoid the fence or object
-    void target_position_clearance_xy(Vector3f& pos_target) const;
+    void target_position_clearance_xy(Vector3f& pos_target, Vector3f& vel_target, float accel, float kP) const;
 
 private:
 

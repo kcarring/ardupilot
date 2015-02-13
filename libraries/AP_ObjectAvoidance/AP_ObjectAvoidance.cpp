@@ -52,7 +52,7 @@ void AP_ObjectAvoidance::init(float delta_sec)
 // Determine if new desired position needs to be constrained
 // Takes a target position, and checks if it violates a fence or object
 // Returns target position untouched, or modified to avoid the fence or object
-void AP_ObjectAvoidance::target_position_clearance_xy(Vector3f& pos_target) const
+void AP_ObjectAvoidance::target_position_clearance_xy( Vector3f& pos_target, Vector3f& vel_target, float accel, float kP) const
 {
     const Vector3f& current_position = _inav.get_position();
 
@@ -62,6 +62,7 @@ void AP_ObjectAvoidance::target_position_clearance_xy(Vector3f& pos_target) cons
         if ( (target_dist_from_home) >= _distance_max) {
             pos_target.x = pos_target.x*_distance_max/target_dist_from_home;
             pos_target.y = pos_target.y*_distance_max/target_dist_from_home;
+
         }
     }
 }

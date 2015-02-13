@@ -676,7 +676,7 @@ void AC_PosControl::pos_to_rate_xy(xy_mode mode, float dt, float ekfNavVelGainSc
             _pos_target.y = curr_pos.y + _leash * _pos_error.y/_distance_to_target;
         }
 
-        _object_avoidance.target_position_clearance_xy(_pos_target);
+        _object_avoidance.target_position_clearance_xy(_pos_target, _vel_target, _accel_cms, _p_pos_xy.kP());
 
         // re-calculate distance error
         _pos_error.x = _pos_target.x - curr_pos.x;
