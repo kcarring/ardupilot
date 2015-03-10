@@ -36,9 +36,9 @@ static void read_control_switch()
                 }
             }
 
-            if(g.ch7_option != auxsw_simple_mode && g.ch8_option != auxsw_simple_mode && g.ch7_option != auxsw_supersimple_mode && g.ch8_option != auxsw_supersimple_mode) {
-                // set Simple mode using stored paramters from Mission planner
-                // rather than by the control switch
+            if(!check_auxsw_simple_mode()) {
+                // if none of the Aux Switches are set to Simple or Super Simple Mode then
+                // set Simple Mode using stored parameters from EEPROM
                 if (BIT_IS_SET(g.super_simple, switch_position)) {
                     set_simple_mode(2);
                 }else{
@@ -56,6 +56,18 @@ static void read_control_switch()
     }
 
     control_switch_state.last_switch_position = switch_position;
+}
+
+// check_auxsw_simple_mode - Check to see if any of the Aux Switches are set to Simple or Super Simple Modes
+static bool check_auxsw_simple_mode(){
+    bool ret = g.ch7_option == auxsw_simple_mode || g.ch7_option == auxsw_supersimple_mode
+                || g.ch8_option == auxsw_simple_mode || g.ch8_option == auxsw_supersimple_mode
+                || g.ch9_option == auxsw_simple_mode || g.ch9_option == auxsw_supersimple_mode
+                || g.ch10_option == auxsw_simple_mode || g.ch10_option == auxsw_supersimple_mode
+                || g.ch11_option == auxsw_simple_mode || g.ch11_option == auxsw_supersimple_mode
+                || g.ch12_option == auxsw_simple_mode || g.ch12_option == auxsw_supersimple_mode;
+
+    return ret;
 }
 
 static void reset_control_switch()
