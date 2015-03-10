@@ -36,7 +36,7 @@ static void read_control_switch()
                 }
             }
 
-            if(g.ch7_option != AUX_SWITCH_SIMPLE_MODE && g.ch8_option != AUX_SWITCH_SIMPLE_MODE && g.ch7_option != AUX_SWITCH_SUPERSIMPLE_MODE && g.ch8_option != AUX_SWITCH_SUPERSIMPLE_MODE) {
+            if(g.ch7_option != auxsw_simple_mode && g.ch8_option != auxsw_simple_mode && g.ch7_option != auxsw_supersimple_mode && g.ch8_option != auxsw_supersimple_mode) {
                 // set Simple mode using stored paramters from Mission planner
                 // rather than by the control switch
                 if (BIT_IS_SET(g.super_simple, switch_position)) {
@@ -166,23 +166,23 @@ static void init_aux_switch_function(int8_t ch_option, uint8_t ch_flag)
 {    
     // init channel options
     switch(ch_option) {
-        case AUX_SWITCH_SIMPLE_MODE:
-        case AUX_SWITCH_SONAR:
-        case AUX_SWITCH_FENCE:
-        case AUX_SWITCH_RESETTOARMEDYAW:
-        case AUX_SWITCH_SUPERSIMPLE_MODE:
-        case AUX_SWITCH_ACRO_TRAINER:
-        case AUX_SWITCH_EPM:
-        case AUX_SWITCH_SPRAYER:
-        case AUX_SWITCH_EKF:
-        case AUX_SWITCH_PARACHUTE_ENABLE:
-        case AUX_SWITCH_PARACHUTE_3POS:	    // we trust the vehicle will be disarmed so even if switch is in release position the chute will not release
-        case AUX_SWITCH_RETRACT_MOUNT:
-        case AUX_SWITCH_MISSIONRESET:
-        case AUX_SWITCH_ATTCON_FEEDFWD:
-        case AUX_SWITCH_ATTCON_ACCEL_LIM:
-        case AUX_SWITCH_RELAY:
-        case AUX_SWITCH_LANDING_GEAR:
+        case auxsw_simple_mode:
+        case auxsw_sonar:
+        case auxsw_fence:
+        case auxsw_resettoarmedyaw:
+        case auxsw_supersimple_mode:
+        case auxsw_acro_trainer:
+        case auxsw_epm:
+        case auxsw_sprayer:
+        case auxsw_ekf:
+        case auxsw_parachute_enable:
+        case auxsw_parachute_3pos:      // we trust the vehicle will be disarmed so even if switch is in release position the chute will not release
+        case auxsw_retract_mount:
+        case auxsw_mission_reset:
+        case auxsw_attcon_feedfwd:
+        case auxsw_attcon_accel_lim:
+        case auxsw_relay:
+        case auxsw_landing_gear:
             do_aux_switch_function(ch_option, ch_flag);
             break;
     }
@@ -194,35 +194,35 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
     int8_t tmp_function = ch_function;
 
     // multi mode check
-    if(ch_function == AUX_SWITCH_MULTI_MODE) {
+    if(ch_function == auxsw_multi_mode) {
         if (g.rc_6.radio_in < CH6_PWM_TRIGGER_LOW) {
-            tmp_function = AUX_SWITCH_FLIP;
+            tmp_function = auxsw_flip;
         }else if (g.rc_6.radio_in > CH6_PWM_TRIGGER_HIGH) {
-            tmp_function = AUX_SWITCH_SAVE_WP;
+            tmp_function = auxsw_save_wp;
         }else{
-            tmp_function = AUX_SWITCH_RTL;
+            tmp_function = auxsw_rtl;
         }
     }
 
     switch(tmp_function) {
-        case AUX_SWITCH_FLIP:
+        case auxsw_flip:
             // flip if switch is on, positive throttle and we're actually flying
             if(ch_flag == AUX_SWITCH_HIGH) {
                 set_mode(FLIP);
             }
             break;
 
-        case AUX_SWITCH_SIMPLE_MODE:
+        case auxsw_simple_mode:
             // low = simple mode off, middle or high position turns simple mode on
             set_simple_mode(ch_flag == AUX_SWITCH_HIGH || ch_flag == AUX_SWITCH_MIDDLE);
             break;
 
-        case AUX_SWITCH_SUPERSIMPLE_MODE:
+        case auxsw_supersimple_mode:
             // low = simple mode off, middle = simple mode, high = super simple mode
             set_simple_mode(ch_flag);
             break;
 
-        case AUX_SWITCH_RTL:
+        case auxsw_rtl:
             if (ch_flag == AUX_SWITCH_HIGH) {
                 // engage RTL (if not possible we remain in current flight mode)
                 set_mode(RTL);
@@ -234,13 +234,13 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             }
             break;
 
-        case AUX_SWITCH_SAVE_TRIM:
+        case auxsw_save_trim:
             if ((ch_flag == AUX_SWITCH_HIGH) && (control_mode <= ACRO) && (g.rc_3.control_in == 0)) {
                 save_trim();
             }
             break;
 
-        case AUX_SWITCH_SAVE_WP:
+        case auxsw_save_wp:
             // save waypoint when switch is brought high
             if (ch_flag == AUX_SWITCH_HIGH) {
 
@@ -295,14 +295,14 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if CAMERA == ENABLED
-        case AUX_SWITCH_CAMERA_TRIGGER:
+        case auxsw_camera_trigger:
             if (ch_flag == AUX_SWITCH_HIGH) {
                 do_take_picture();
             }
             break;
 #endif
 
-        case AUX_SWITCH_SONAR:
+        case auxsw_sonar:
             // enable or disable the sonar
 #if CONFIG_SONAR == ENABLED
             if (ch_flag == AUX_SWITCH_HIGH) {
@@ -314,7 +314,7 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if AC_FENCE == ENABLED
-        case AUX_SWITCH_FENCE:
+        case auxsw_fence:
             // enable or disable the fence
             if (ch_flag == AUX_SWITCH_HIGH) {
                 fence.enable(true);
@@ -326,7 +326,7 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
         // To-Do: add back support for this feature
-        //case AUX_SWITCH_RESETTOARMEDYAW:
+        //case auxsw_resettoarmedyaw:
         //    if (ch_flag == AUX_SWITCH_HIGH) {
         //        set_yaw_mode(YAW_RESETTOARMEDYAW);
         //    }else{
@@ -334,7 +334,7 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
         //    }
         //    break;
 
-        case AUX_SWITCH_ACRO_TRAINER:
+        case auxsw_acro_trainer:
             switch(ch_flag) {
                 case AUX_SWITCH_LOW:
                     g.acro_trainer = ACRO_TRAINER_DISABLED;
@@ -351,7 +351,7 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             }
             break;
 #if EPM_ENABLED == ENABLED
-        case AUX_SWITCH_EPM:
+        case auxsw_epm:
             switch(ch_flag) {
                 case AUX_SWITCH_LOW:
                     epm.release();
@@ -365,14 +365,14 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
 #if SPRAYER == ENABLED
-        case AUX_SWITCH_SPRAYER:
+        case auxsw_sprayer:
             sprayer.enable(ch_flag == AUX_SWITCH_HIGH);
             // if we are disarmed the pilot must want to test the pump
             sprayer.test_pump((ch_flag == AUX_SWITCH_HIGH) && !motors.armed());
             break;
 #endif
 
-        case AUX_SWITCH_AUTO:
+        case auxsw_auto:
             if (ch_flag == AUX_SWITCH_HIGH) {
                 set_mode(AUTO);
             }else{
@@ -384,7 +384,7 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if AUTOTUNE_ENABLED == ENABLED
-        case AUX_SWITCH_AUTOTUNE:
+        case auxsw_autotune:
             // turn on auto tuner
             switch(ch_flag) {
                 case AUX_SWITCH_LOW:
@@ -402,7 +402,7 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
 
-        case AUX_SWITCH_LAND:
+        case auxsw_land:
             if (ch_flag == AUX_SWITCH_HIGH) {
                 set_mode(LAND);
             }else{
@@ -414,24 +414,24 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if AP_AHRS_NAVEKF_AVAILABLE
-    case AUX_SWITCH_EKF:
+    case auxsw_ekf:
         ahrs.set_ekf_use(ch_flag==AUX_SWITCH_HIGH);
         break;
 #endif
 
 #if PARACHUTE == ENABLED
-    case AUX_SWITCH_PARACHUTE_ENABLE:
+    case auxsw_parachute_enable:
         // Parachute enable/disable
         parachute.enabled(ch_flag == AUX_SWITCH_HIGH);
         break;
 
-    case AUX_SWITCH_PARACHUTE_RELEASE:
+    case auxsw_parachute_release:
         if (ch_flag == AUX_SWITCH_HIGH) {
             parachute_manual_release();
         }
         break;
 
-    case AUX_SWITCH_PARACHUTE_3POS:
+    case auxsw_parachute_3pos:
         // Parachute disable, enable, release with 3 position switch
         switch (ch_flag) {
             case AUX_SWITCH_LOW:
@@ -450,24 +450,24 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
         break;
 #endif
 
-    case AUX_SWITCH_MISSIONRESET:
+    case auxsw_mission_reset:
         if (ch_flag == AUX_SWITCH_HIGH) {
             mission.reset();
         }
         break;
 
-    case AUX_SWITCH_ATTCON_FEEDFWD:
+    case auxsw_attcon_feedfwd:
         // enable or disable feed forward
         attitude_control.bf_feedforward(ch_flag == AUX_SWITCH_HIGH);
         break;
 
-    case AUX_SWITCH_ATTCON_ACCEL_LIM:
+    case auxsw_attcon_accel_lim:
         // enable or disable accel limiting by restoring defaults
         attitude_control.accel_limiting(ch_flag == AUX_SWITCH_HIGH);
         break;
         
 #if MOUNT == ENABLE
-    case AUX_SWITCH_RETRACT_MOUNT:
+    case auxsw_retract_mount:
         switch (ch_flag) {
             case AUX_SWITCH_HIGH:
                 camera_mount.set_mode(MAV_MOUNT_MODE_RETRACT);
@@ -479,11 +479,11 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
         break;
 #endif
 
-    case AUX_SWITCH_RELAY:
+    case auxsw_relay:
         ServoRelayEvents.do_set_relay(0, ch_flag == AUX_SWITCH_HIGH);
         break;
 
-    case AUX_SWITCH_LANDING_GEAR:
+    case auxsw_landing_gear:
         switch (ch_flag) {
             case AUX_SWITCH_LOW:
                 landinggear.set_cmd_mode(LandingGear_Deploy);

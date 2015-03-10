@@ -387,6 +387,40 @@ static union {
     uint32_t value;
 } ap;
 
+// Aux Switch enumeration
+enum aux_sw_func {
+    auxsw_do_nothing =     0,      // aux switch disabled
+    auxsw_set_hover,               // deprecated
+    auxsw_flip,                    // flip
+    auxsw_simple_mode,             // change to simple mode
+    auxsw_rtl,                     // change to RTL flight mode
+    auxsw_save_trim,               // save current position as level
+    auxsw_adc_filter,              // deprecated
+    auxsw_save_wp,                 // save mission waypoint or RTL if in auto mode
+    auxsw_multi_mode,              // depending upon CH6 position Flip (if ch6 is low), RTL (if ch6 in middle) or Save WP (if ch6 is high)
+    auxsw_camera_trigger,          // trigger camera servo or relay
+    auxsw_sonar,                   // allow enabling or disabling sonar in flight which helps avoid surface tracking when you are far above the ground
+    auxsw_fence,                   // allow enabling or disabling fence in flight
+    auxsw_resettoarmedyaw,         // changes yaw to be same as when quad was armed
+    auxsw_supersimple_mode,        // change to simple mode in middle, super simple at top
+    auxsw_acro_trainer,            // low = disabled, middle = leveled, high = leveled and limited
+    auxsw_sprayer,                 // enable/disable the crop sprayer
+    auxsw_auto,                    // change to auto flight mode
+    auxsw_autotune,                // auto tune
+    auxsw_land,                    // change to LAND flight mode
+    auxsw_epm,                     // Operate the EPM cargo gripper low=off, middle=neutral, high=on
+    auxsw_ekf,                     // Enable NavEKF
+    auxsw_parachute_enable,        // Parachute enable/disable
+    auxsw_parachute_release,       // Parachute release
+    auxsw_parachute_3pos,          // Parachute disable, enable, release with 3 position switch
+    auxsw_mission_reset,           // Reset auto mission to start from first command
+    auxsw_attcon_feedfwd,          // enable/disable the roll and pitch rate feed forward
+    auxsw_attcon_accel_lim,        // enable/disable the roll, pitch and yaw accel limiting
+    auxsw_retract_mount,           // Retract Mount
+    auxsw_relay,                   // Relay pin on/off (only supports first relay)
+    auxsw_landing_gear,            // Landing gear controller
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // Radio
 ////////////////////////////////////////////////////////////////////////////////

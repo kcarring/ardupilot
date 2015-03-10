@@ -228,27 +228,27 @@
 //
 
 #ifndef CH7_OPTION
- # define CH7_OPTION            AUX_SWITCH_DO_NOTHING
+ # define CH7_OPTION            auxsw_do_nothing
 #endif
 
 #ifndef CH8_OPTION
- # define CH8_OPTION            AUX_SWITCH_DO_NOTHING
+ # define CH8_OPTION            auxsw_do_nothing
 #endif
 
 #ifndef CH9_OPTION
- # define CH9_OPTION            AUX_SWITCH_DO_NOTHING
+ # define CH9_OPTION            auxsw_do_nothing
 #endif
 
 #ifndef CH10_OPTION
- # define CH10_OPTION           AUX_SWITCH_DO_NOTHING
+ # define CH10_OPTION           auxsw_do_nothing
 #endif
 
 #ifndef CH11_OPTION
- # define CH11_OPTION           AUX_SWITCH_DO_NOTHING
+ # define CH11_OPTION           auxsw_do_nothing
 #endif
 
 #ifndef CH12_OPTION
- # define CH12_OPTION           AUX_SWITCH_DO_NOTHING
+ # define CH12_OPTION           auxsw_do_nothing
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
