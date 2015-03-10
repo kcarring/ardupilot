@@ -4,7 +4,7 @@
 static void landinggear_update(){
 
     // If landing gear control is active, run update function.
-    if (g.ch7_option == auxsw_landing_gear || g.ch8_option == auxsw_landing_gear ){
+    if (check_auxsw_landing_gear()){
 
         // last status (deployed or retracted) used to check for changes
         static bool last_deploy_status;

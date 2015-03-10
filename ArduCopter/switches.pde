@@ -70,6 +70,15 @@ static bool check_auxsw_simple_mode(){
     return ret;
 }
 
+// check_auxsw_landing_gear - Check to see if any of the Aux Switches are set to control landing gear
+static bool check_auxsw_landing_gear(){
+    bool ret = g.ch7_option == auxsw_landing_gear || g.ch8_option == auxsw_landing_gear
+                || g.ch9_option == auxsw_landing_gear || g.ch10_option == auxsw_landing_gear
+                || g.ch11_option == auxsw_landing_gear || g.ch12_option == auxsw_landing_gear;
+
+    return ret;
+}
+
 static void reset_control_switch()
 {
     control_switch_state.last_switch_position = control_switch_state.debounced_switch_position = -1;
