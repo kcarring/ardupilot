@@ -383,6 +383,7 @@ static union {
         uint8_t system_time_set     : 1; // 28      // true if the system time has been set from the GPS
         uint8_t gps_base_pos_set    : 1; // 29      // true when the gps base position has been set (used for RTK gps only)
         enum HomeState home_state   : 2; // 30,31   // home status (unset, set, locked)
+        uint8_t motor_interlock     : 1; // 32      // motor interlock status, final control for motors on/off
     };
     uint32_t value;
 } ap;
@@ -419,6 +420,7 @@ enum aux_sw_func {
     auxsw_retract_mount,           // Retract Mount
     auxsw_relay,                   // Relay pin on/off (only supports first relay)
     auxsw_landing_gear,            // Landing gear controller
+    auxsw_motor_interlock          // Motor interlock or "kill switch" function
 };
 
 ////////////////////////////////////////////////////////////////////////////////

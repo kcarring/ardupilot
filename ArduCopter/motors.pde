@@ -186,6 +186,11 @@ static bool init_arm_motors(bool arming_from_gcs)
     // enable output to motors
     output_min();
 
+    // if Motor Interlock Aux Switch is not used, set interlock true.
+    if (!check_auxsw_motor_interlock()){
+        set_motor_interlock(true);
+    }
+
     // finally actually arm the motors
     motors.armed(true);
 
@@ -686,6 +691,10 @@ static void init_disarm_motors()
     gcs_send_text_P(SEVERITY_HIGH, PSTR("DISARMING MOTORS"));
 #endif
 
+    // always force Motor Interlock to false
+    set_motor_interlock(false);
+
+    // send disarm command to motors
     motors.armed(false);
 
     // disable inertial nav errors temporarily

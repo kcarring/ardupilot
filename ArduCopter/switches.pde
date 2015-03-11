@@ -58,6 +58,15 @@ static void read_control_switch()
     control_switch_state.last_switch_position = switch_position;
 }
 
+// check_auxsw_motor_interlock - Check to see if any of the Aux Switches are set to control motor interlock
+static bool check_auxsw_motor_interlock(){
+    bool ret = g.ch7_option == auxsw_motor_interlock || g.ch8_option == auxsw_motor_interlock
+                || g.ch9_option == auxsw_motor_interlock || g.ch10_option == auxsw_motor_interlock
+                || g.ch11_option == auxsw_motor_interlock || g.ch12_option == auxsw_motor_interlock;
+
+    return ret;
+}
+
 // check_auxsw_simple_mode - Check to see if any of the Aux Switches are set to Simple or Super Simple Modes
 static bool check_auxsw_simple_mode(){
     bool ret = g.ch7_option == auxsw_simple_mode || g.ch7_option == auxsw_supersimple_mode
@@ -540,6 +549,12 @@ static void do_aux_switch_function(int8_t ch_function, uint8_t ch_flag)
         }
         break;    
 
+    case auxsw_motor_interlock:
+        // Turn on when above LOW, because channel will also be used for speed
+        // control signal in tradheli
+        set_motor_interlock(ch_flag == AUX_SWITCH_HIGH || ch_flag == AUX_SWITCH_MIDDLE);
+        break;
+                
     }
 }
 
