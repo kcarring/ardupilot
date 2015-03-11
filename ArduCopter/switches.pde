@@ -79,6 +79,28 @@ static bool check_auxsw_landing_gear(){
     return ret;
 }
 
+// check_duplicate_auxsw - Check to see if any Aux Switch Functions are duplicated
+static bool check_duplicate_auxsw(void){
+
+    bool ret = ((g.ch7_option != auxsw_do_nothing) && (g.ch7_option == g.ch8_option ||
+                g.ch7_option == g.ch9_option || g.ch7_option == g.ch10_option ||
+                g.ch7_option == g.ch11_option || g.ch7_option == g.ch12_option));
+
+    ret = ret || ((g.ch8_option != auxsw_do_nothing) && (g.ch8_option == g.ch9_option ||
+                    g.ch8_option == g.ch10_option || g.ch8_option == g.ch11_option ||
+                    g.ch8_option == g.ch12_option));
+
+    ret = ret || ((g.ch9_option != auxsw_do_nothing) && (g.ch9_option == g.ch10_option ||
+                    g.ch9_option == g.ch11_option || g.ch9_option == g.ch12_option));
+
+    ret = ret || ((g.ch10_option != auxsw_do_nothing) && (g.ch10_option == g.ch11_option ||
+                    g.ch10_option == g.ch12_option));
+
+    ret = ret || ((g.ch11_option != auxsw_do_nothing) && (g.ch11_option == g.ch12_option));
+
+    return ret;
+}
+
 static void reset_control_switch()
 {
     control_switch_state.last_switch_position = control_switch_state.debounced_switch_position = -1;
