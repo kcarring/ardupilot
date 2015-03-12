@@ -160,8 +160,24 @@ void AP_MotorsMatrix::output_armed()
     _rc_throttle.calc_pwm();
     _rc_yaw.calc_pwm();
 
-    // if we are not sending a throttle output, we cut the motors
-    if (_rc_throttle.servo_out == 0) {
+    // if motor interlock is not enabled, we will full-stop all motors
+    if (!_flags.interlock){
+
+        for (i=0; i<AP_MOTORS_MAX_NUM_MOTORS; i++) {
+            // spin motors at minimum
+            if (motor_enabled[i]) {
+                motor_out[i] = _rc_throttle.radio_min;
+            }
+        }
+
+        // set all limits flags true
+        limit.roll_pitch = true;
+        limit.yaw = true;
+        limit.throttle_lower = true;
+        limit.throttle_upper = true;
+    
+    // else if we are not sending a throttle output, we cut the motors to spin_when_armed
+    } else if (_rc_throttle.servo_out == 0) {
         // range check spin_when_armed
         if (_spin_when_armed_ramped < 0) {
              _spin_when_armed_ramped = 0;
