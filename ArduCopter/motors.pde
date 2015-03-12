@@ -740,6 +740,7 @@ static void motors_output()
     if (ap.motor_test) {
         motor_test_output();
     } else {
+        motors.set_interlock(ap.motor_interlock);
         motors.output();
     }
 }
