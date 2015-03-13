@@ -365,8 +365,8 @@ static void update_auto_armed()
             set_auto_armed(false);
             return;
         }
-        // if in stabilize or acro flight mode and throttle is zero, auto-armed should become false
-        if(mode_has_manual_throttle(control_mode) && ap.throttle_zero && !failsafe.radio) {
+        // if in stabilize or acro flight mode and throttle is zero or motor interlock is disabled, auto-armed should become false
+        if(mode_has_manual_throttle(control_mode) && (ap.throttle_zero || !ap.motor_interlock) && !failsafe.radio) {
             set_auto_armed(false);
         }
     }else{
@@ -378,8 +378,8 @@ static void update_auto_armed()
             set_auto_armed(true);
         }
 #else
-        // if motors are armed and throttle is above zero auto_armed should be true
-        if(motors.armed() && !ap.throttle_zero) {
+        // if motors are armed and throttle is above zero or motor interlock is enabled auto_armed should be true
+        if(motors.armed() && (!ap.throttle_zero || ap.motor_interlock)) {
             set_auto_armed(true);
         }
 #endif // HELI_FRAME

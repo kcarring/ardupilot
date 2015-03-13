@@ -75,9 +75,9 @@ static void auto_disarm_check()
 
     uint8_t delay;
 
-    // exit immediately if we are already disarmed or throttle is not zero while not using interlock switch,
-    // or interlock is enabled while using interlock switch
-    if (!motors.armed() || (!ap.using_interlock && !ap.throttle_zero) || (ap.using_interlock && ap.motor_interlock)) {
+    // exit immediately if we are already disarmed or throttle is not zero,
+    // or motor interlock is enabled
+    if (!motors.armed() || (!ap.throttle_zero) || ap.motor_interlock) {
         auto_disarming_counter = 0;
         return;
     }

@@ -44,18 +44,18 @@ static bool flip_init(bool ignore_checks)
         return false;
     }
 
-    // if in acro or stabilize ensure throttle is above zero
-    if (ap.throttle_zero && (control_mode == ACRO || control_mode == STABILIZE)) {
+    // only allow flip when flying
+    if (!motors.armed() || ap.land_complete) {
+        return false;
+    }
+
+    // if in acro or stabilize ensure throttle is above zero or motor interlock enabled
+    if ((ap.throttle_zero || !ap.motor_interlock) && (control_mode == ACRO || control_mode == STABILIZE)){
         return false;
     }
 
     // ensure roll input is less than 40deg
     if (abs(g.rc_1.control_in) >= 4000) {
-        return false;
-    }
-
-    // only allow flip when flying
-    if (!motors.armed() || ap.land_complete) {
         return false;
     }
 

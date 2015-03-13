@@ -279,7 +279,8 @@ static void exit_mission()
     }else{
 #if LAND_REQUIRE_MIN_THROTTLE_TO_DISARM == ENABLED
         // disarm when the landing detector says we've landed and throttle is at minimum
-        if (ap.throttle_zero || failsafe.radio) {
+        // or motor interlock is disabled.
+        if (ap.throttle_zero || !ap.motor_interlock || failsafe.radio) {
             init_disarm_motors();
         }
 #else

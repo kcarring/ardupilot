@@ -59,7 +59,8 @@ static void land_gps_run()
 
 #if LAND_REQUIRE_MIN_THROTTLE_TO_DISARM == ENABLED
         // disarm when the landing detector says we've landed and throttle is at minimum
-        if (ap.land_complete && (ap.throttle_zero || failsafe.radio)) {
+        // or throttle interlock is disabled
+        if (ap.land_complete && (ap.throttle_zero || !ap.motor_interlock || failsafe.radio)) {
             init_disarm_motors();
         }
 #else
@@ -132,7 +133,8 @@ static void land_nogps_run()
         attitude_control.set_throttle_out(0, false);
 #if LAND_REQUIRE_MIN_THROTTLE_TO_DISARM == ENABLED
         // disarm when the landing detector says we've landed and throttle is at minimum
-        if (ap.land_complete && (ap.throttle_zero || failsafe.radio)) {
+        // or motor interlock is disabled.
+        if (ap.land_complete && (ap.throttle_zero || !ap.motor_interlock || failsafe.radio)) {
             init_disarm_motors();
         }
 #else

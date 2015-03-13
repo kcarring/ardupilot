@@ -24,8 +24,9 @@ void crash_check()
     parachute_check();
 #endif
 
-    // return immediately if motors are not armed or pilot's throttle is above zero
-    if (!motors.armed() || (!ap.throttle_zero && !failsafe.radio)) {
+    // return immediately if motors are not armed, or pilot's throttle is above zero
+    // or motor interlock is enabled while not in radio failsafe
+    if (!motors.armed() || ((!ap.throttle_zero || ap.motor_interlock) && !failsafe.radio)) {
         inverted_count = 0;
         return;
     }

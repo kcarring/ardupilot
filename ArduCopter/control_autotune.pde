@@ -225,13 +225,13 @@ static bool autotune_start(bool ignore_checks)
         return false;
     }
 
-    // ensure throttle is above zero
-    if (ap.throttle_zero) {
+    // ensure we are flying
+    if (!motors.armed() || !ap.auto_armed || ap.land_complete) {
         return false;
     }
 
-    // ensure we are flying
-    if (!motors.armed() || !ap.auto_armed || ap.land_complete) {
+    // ensure throttle is above zero or motor interlock enabled
+    if (ap.throttle_zero || !ap.motor_interlock) {
         return false;
     }
 

@@ -15,8 +15,8 @@ static void failsafe_radio_on_event()
     switch(control_mode) {
         case STABILIZE:
         case ACRO:
-            // if throttle is zero OR vehicle is landed disarm motors
-            if (ap.throttle_zero || ap.land_complete) {
+            // if throttle is zero OR motor interlock is disabled OR vehicle is landed disarm motors
+            if (ap.throttle_zero || !ap.motor_interlock || ap.land_complete) {
                 init_disarm_motors();
 
             // if failsafe_throttle is FS_THR_ENABLED_ALWAYS_LAND then land immediately
@@ -110,8 +110,8 @@ static void failsafe_battery_event(void)
         switch(control_mode) {
             case STABILIZE:
             case ACRO:
-                // if throttle is zero OR vehicle is landed disarm motors
-                if (ap.throttle_zero || ap.land_complete) {
+                // if throttle is zero OR motor interlock is disabled || vehicle is landed disarm motors
+                if (ap.throttle_zero || ap.motor_interlock|| ap.land_complete) {
                     init_disarm_motors();
                 }else{
                     // set mode to RTL or LAND
@@ -270,8 +270,8 @@ static void failsafe_gcs_check()
         case STABILIZE:
         case ACRO:
         case SPORT:
-            // if throttle is zero disarm motors
-            if (ap.throttle_zero) {
+            // if throttle is zero or motor interlock is disbled disarm motors
+            if (ap.throttle_zero || !ap.motor_interlock) {
                 init_disarm_motors();
             }else if(home_distance > wp_nav.get_wp_radius()) {
                 // switch to RTL or if that fails, LAND
