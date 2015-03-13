@@ -159,6 +159,19 @@ static bool init_arm_motors(bool arming_from_gcs)
         did_ground_start = true;
     }
 
+    // check if we are using motor interlock control on an aux switch
+    set_using_interlock(check_auxsw_motor_interlock());
+
+    // if we are using motor interlock switch and it's enabled, fail to arm
+    if (ap.using_interlock && ap.motor_interlock){
+        gcs_send_text_P(SEVERITY_HIGH,PSTR("Arm: Motor Interlock Enabled"));
+        AP_Notify::flags.armed = false;
+        return false;
+    } else if (!ap.using_interlock){
+       // if Motor Interlock Aux Switch is not used, set interlock true.
+        set_motor_interlock(true);
+    }
+
     // fast baro calibration to reset ground pressure
     init_barometer(false);
 
@@ -185,11 +198,6 @@ static bool init_arm_motors(bool arming_from_gcs)
 
     // enable output to motors
     output_min();
-
-    // if Motor Interlock Aux Switch is not used, set interlock true.
-    if (!check_auxsw_motor_interlock()){
-        set_motor_interlock(true);
-    }
 
     // finally actually arm the motors
     motors.armed(true);
@@ -220,6 +228,17 @@ static bool pre_arm_checks(bool display_failure)
     // exit immediately if already armed
     if (motors.armed()) {
         return true;
+    }
+
+    // check if motor interlock aux switch is in use
+    // if it is, switch needs to be in disabled position to arm
+    // otherwise exit immediately.  This check to be repeated, 
+    // as state can change at any time.
+    set_using_interlock(check_auxsw_motor_interlock());
+    if (ap.using_interlock && ap.motor_interlock){
+        if (display_failure) {
+            gcs_send_text_P(SEVERITY_HIGH,PSTR("PreArm: Motor Interlock Enabled"));
+        }
     }
 
     // exit immediately if we've already successfully performed the pre-arm check
