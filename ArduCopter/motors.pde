@@ -770,7 +770,12 @@ static void motors_output()
     if (ap.motor_test) {
         motor_test_output();
     } else {
-        motors.set_interlock(ap.motor_interlock);
+        if (ap.using_interlock){
+            motors.set_interlock(ap.motor_interlock);
+        } else {
+            // if not using interlock switch, force interlock true
+            motors.set_interlock(true);
+        }
         motors.output();
     }
 }
