@@ -176,14 +176,11 @@ static bool init_arm_motors(bool arming_from_gcs)
     // check if we are using motor interlock control on an aux switch
     set_using_interlock(check_auxsw_motor_interlock());
 
-    // if we are using motor interlock switch and it's enabled, fail to arm
+    // if we are using motor interlock switch and it's disabled, fail to arm
     if (ap.using_interlock && ap.motor_interlock){
         gcs_send_text_P(SEVERITY_HIGH,PSTR("Arm: Motor Interlock Enabled"));
         AP_Notify::flags.armed = false;
         return false;
-    } else if (!ap.using_interlock){
-       // if Motor Interlock Aux Switch is not used, set interlock true.
-        set_motor_interlock(true);
     }
 
     // fast baro calibration to reset ground pressure
