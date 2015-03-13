@@ -25,7 +25,7 @@ static void sport_run()
     float target_climb_rate = 0;
 
     // if not armed or throttle at zero, set throttle to zero and exit immediately
-    if(!motors.armed() || g.rc_3.control_in <= 0) {
+    if(!motors.armed() || ap.throttle_zero) {
         attitude_control.relax_bf_rate_controller();
         attitude_control.set_yaw_target_to_current_heading();
         attitude_control.set_throttle_out(0, false);
