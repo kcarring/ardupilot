@@ -65,6 +65,7 @@ enum aux_sw_func {
     AUXSW_RETRACT_MOUNT,           // Retract Mount
     AUXSW_RELAY,                   // Relay pin on/off (only supports first relay)
     AUXSW_LANDING_GEAR,            // Landing gear controller
+    AUXSW_MOTOR_ESTOP,             // Emergency Stop Switch
     AUXSW_MOTOR_INTERLOCK,         // Motor On/Off switch
 };
 
