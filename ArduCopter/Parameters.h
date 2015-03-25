@@ -390,7 +390,7 @@ public:
     //
     AP_Int32        log_bitmask;
     AP_Int8         esc_calibrate;
-    AP_Int8         radio_tuning;
+    AP_Int16        radio_tuning;
     AP_Int16        radio_tuning_high;
     AP_Int16        radio_tuning_low;
     AP_Int8         frame_orientation;

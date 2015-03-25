@@ -19,10 +19,15 @@ static void tuning() {
 
     switch(g.radio_tuning) {
 
-    // Roll, Pitch tuning
     case TUNING_STABILIZE_ROLL_PITCH_KP:
+        // Roll, Pitch tuning
         g.p_stabilize_roll.kP(tuning_value);
         g.p_stabilize_pitch.kP(tuning_value);
+        break;
+
+    case TUNING_STABILIZE_YAW_KP:
+        // Yaw tuning
+        g.p_stabilize_yaw.kP(tuning_value);
         break;
 
     case TUNING_RATE_ROLL_PITCH_KP:
@@ -40,21 +45,71 @@ static void tuning() {
         g.pid_rate_pitch.kD(tuning_value);
         break;
 
-    // Yaw tuning
-    case TUNING_STABILIZE_YAW_KP:
-        g.p_stabilize_yaw.kP(tuning_value);
+    case TUNING_RATE_PITCH_KP:
+        g.pid_rate_pitch.kP(tuning_value);
         break;
 
-    case TUNING_YAW_RATE_KP:
+    case TUNING_RATE_PITCH_KI:
+        g.pid_rate_pitch.kI(tuning_value);
+        break;
+
+    case TUNING_RATE_PITCH_KD:
+        g.pid_rate_pitch.kD(tuning_value);
+        break;
+
+#if FRAME_CONFIG == HELI_FRAME
+    case TUNING_RATE_PITCH_FF:
+        g.pid_rate_pitch.ff(tuning_value);
+        break;
+#endif
+
+    case TUNING_RATE_ROLL_KP:
+        g.pid_rate_roll.kP(tuning_value);
+        break;
+
+    case TUNING_RATE_ROLL_KI:
+        g.pid_rate_roll.kI(tuning_value);
+        break;
+
+    case TUNING_RATE_ROLL_KD:
+        g.pid_rate_roll.kD(tuning_value);
+        break;
+
+#if FRAME_CONFIG == HELI_FRAME
+    case TUNING_RATE_ROLL_FF:
+        g.pid_rate_roll.ff(tuning_value);
+        break;
+#endif
+
+    case TUNING_RATE_YAW_KP:
         g.pid_rate_yaw.kP(tuning_value);
         break;
 
-    case TUNING_YAW_RATE_KD:
+    case TUNING_RATE_YAW_KI:
+        g.pid_rate_yaw.kI(tuning_value);
+        break;
+
+    case TUNING_RATE_YAW_KD:
         g.pid_rate_yaw.kD(tuning_value);
         break;
 
-    // Altitude and throttle tuning
+#if FRAME_CONFIG == HELI_FRAME
+    case TUNING_RATE_YAW_FF:
+        g.pid_rate_yaw.ff(tuning_value);
+        break;
+#endif
+
+    case TUNING_RATE_RP_FILT:
+        g.pid_rate_pitch.filt_hz(tuning_value);
+        g.pid_rate_roll.filt_hz(tuning_value);
+        break;
+
+    case TUNING_RATE_YAW_FILT:
+        g.pid_rate_yaw.filt_hz(tuning_value);
+        break;
+
     case TUNING_ALTITUDE_HOLD_KP:
+        // Altitude and throttle tuning
         g.p_alt_hold.kP(tuning_value);
         break;
 
@@ -74,63 +129,9 @@ static void tuning() {
         g.pid_accel_z.kD(tuning_value);
         break;
 
-    // Loiter and navigation tuning
-    case TUNING_LOITER_POSITION_KP:
-        g.p_pos_xy.kP(tuning_value);
-        break;
-
-    case TUNING_VEL_XY_KP:
-        g.pi_vel_xy.kP(tuning_value);
-        break;
-
-    case TUNING_VEL_XY_KI:
-        g.pi_vel_xy.kI(tuning_value);
-        break;
-
     case TUNING_WP_SPEED:
         // set waypoint navigation horizontal speed to 0 ~ 1000 cm/s
         wp_nav.set_speed_xy(g.rc_6.control_in);
-        break;
-
-    // Acro roll pitch gain
-    case TUNING_ACRO_RP_KP:
-        g.acro_rp_p = tuning_value;
-        break;
-
-    // Acro yaw gain
-    case TUNING_ACRO_YAW_KP:
-        g.acro_yaw_p = tuning_value;
-        break;
-
-#if FRAME_CONFIG == HELI_FRAME
-    case TUNING_HELI_EXTERNAL_GYRO:
-        motors.ext_gyro_gain(g.rc_6.control_in);
-        break;
-
-    case TUNING_RATE_PITCH_FF:
-        g.pid_rate_pitch.ff(tuning_value);
-        break;
-
-    case TUNING_RATE_ROLL_FF:
-        g.pid_rate_roll.ff(tuning_value);
-        break;
-
-    case TUNING_RATE_YAW_FF:
-        g.pid_rate_yaw.ff(tuning_value);
-        break;
-#endif
-
-    case TUNING_AHRS_YAW_KP:
-        ahrs._kp_yaw.set(tuning_value);
-        break;
-
-    case TUNING_AHRS_KP:
-        ahrs._kp.set(tuning_value);
-        break;
-
-    case TUNING_DECLINATION:
-        // set declination to +-20degrees
-        compass.set_declination(ToRad((2.0f * g.rc_6.control_in - g.radio_tuning_high)/100.0f), false);     // 2nd parameter is false because we do not want to save to eeprom because this would have a performance impact
         break;
 
     case TUNING_CIRCLE_RATE:
@@ -143,8 +144,58 @@ static void tuning() {
         g.sonar_gain.set(tuning_value);
         break;
 
-#if 0
-        // disabled for now - we need accessor functions
+    case TUNING_LOITER_POSITION_KP:
+        // Loiter and navigation tuning
+        g.p_pos_xy.kP(tuning_value);
+        break;
+
+    case TUNING_VEL_XY_KP:
+        g.pi_vel_xy.kP(tuning_value);
+        break;
+
+    case TUNING_VEL_XY_KI:
+        g.pi_vel_xy.kI(tuning_value);
+        break;
+
+    case TUNING_ACRO_RP_KP:
+        // Acro roll pitch gain
+        g.acro_rp_p = tuning_value;
+        break;
+
+    case TUNING_ACRO_YAW_KP:
+        // Acro yaw gain
+        g.acro_yaw_p = tuning_value;
+        break;
+
+    case TUNING_AHRS_RP_KP:
+        ahrs._kp.set(tuning_value);
+        break;
+
+    case TUNING_AHRS_YAW_KP:
+        ahrs._kp_yaw.set(tuning_value);
+        break;
+
+    case TUNING_DECLINATION:
+        // set declination to +-20degrees
+        compass.set_declination(ToRad((2.0f * g.rc_6.control_in - g.radio_tuning_high)/100.0f), false);     // 2nd parameter is false because we do not want to save to eeprom because this would have a performance impact
+        break;
+
+    case TUNING_RC_FEEL_RP:
+        // roll-pitch input smoothing
+        g.rc_feel_rp = g.rc_6.control_in / 10;
+        break;
+
+    case TUNING_RATE_MOT_YAW_HEADROOM:
+        motors.set_yaw_headroom(tuning_value*1000);
+        break;
+
+#if FRAME_CONFIG == HELI_FRAME
+    case TUNING_HELI_EXTERNAL_GYRO:
+        motors.ext_gyro_gain(g.rc_6.control_in);
+        break;
+#endif
+
+#if 0    // disabled for now - we need accessor functions
     case TUNING_EKF_VERTICAL_POS:
         // EKF's baro vs accel (higher rely on accels more, baro impact is reduced)
         ahrs.get_NavEKF()._gpsVertPosNoise = tuning_value;
@@ -160,42 +211,5 @@ static void tuning() {
         ahrs.get_NavEKF()._accNoise = tuning_value;
         break;
 #endif
-
-    case TUNING_RC_FEEL_RP:
-        // roll-pitch input smoothing
-        g.rc_feel_rp = g.rc_6.control_in / 10;
-        break;
-
-    case TUNING_RATE_PITCH_KP:
-        g.pid_rate_pitch.kP(tuning_value);
-        break;
-
-    case TUNING_RATE_PITCH_KI:
-        g.pid_rate_pitch.kI(tuning_value);
-        break;
-
-    case TUNING_RATE_PITCH_KD:
-        g.pid_rate_pitch.kD(tuning_value);
-        break;
-
-    case TUNING_RATE_ROLL_KP:
-        g.pid_rate_roll.kP(tuning_value);
-        break;
-
-    case TUNING_RATE_ROLL_KI:
-        g.pid_rate_roll.kI(tuning_value);
-        break;
-
-    case TUNING_RATE_ROLL_KD:
-        g.pid_rate_roll.kD(tuning_value);
-        break;
-
-    case TUNING_RATE_MOT_YAW_HEADROOM:
-        motors.set_yaw_headroom(tuning_value*1000);
-        break;
-
-     case TUNING_RATE_YAW_FILT:
-         g.pid_rate_yaw.filt_hz(tuning_value);
-         break;
     }
 }
