@@ -394,12 +394,12 @@ public:
     AP_Int16        radio_tuning_high;
     AP_Int16        radio_tuning_low;
     AP_Int8         frame_orientation;
-    AP_Int8         ch7_option;
-    AP_Int8         ch8_option;
-    AP_Int8         ch9_option;
-    AP_Int8         ch10_option;
-    AP_Int8         ch11_option;
-    AP_Int8         ch12_option;
+    AP_Int16        ch7_option;
+    AP_Int16        ch8_option;
+    AP_Int16        ch9_option;
+    AP_Int16        ch10_option;
+    AP_Int16        ch11_option;
+    AP_Int16        ch12_option;
     AP_Int8         arming_check;
 
     AP_Int8         land_repositioning;
