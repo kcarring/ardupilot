@@ -237,8 +237,8 @@ static void init_ardupilot()
 
     // initialise the flight mode and aux switch
     // ---------------------------
-    reset_control_switch();
-    init_aux_switches();
+    reset_flight_mode_switch();
+    init_rc_input_switches();
 
 #if FRAME_CONFIG == HELI_FRAME
     // trad heli specific initialisation

@@ -24,47 +24,47 @@ enum autopilot_yaw_mode {
 };
 
 // Ch6... Ch12 aux switch control
-#define AUX_SWITCH_PWM_TRIGGER_HIGH 1800   // pwm value above which the ch7 or ch8 option will be invoked
-#define AUX_SWITCH_PWM_TRIGGER_LOW  1200   // pwm value below which the ch7 or ch8 option will be disabled
+#define RC_IN_SWITCH_PWM_TRIGGER_HIGH 1800   // pwm value above which the ch7 or ch8 option will be invoked
+#define RC_IN_SWITCH_PWM_TRIGGER_LOW  1200   // pwm value below which the ch7 or ch8 option will be disabled
 #define CH6_PWM_TRIGGER_HIGH    1800
 #define CH6_PWM_TRIGGER_LOW     1200
 
 // values used by the ap.ch7_opt and ap.ch8_opt flags
-#define AUX_SWITCH_LOW              0       // indicates auxiliar switch is in the low position (pwm <1200)
-#define AUX_SWITCH_MIDDLE           1       // indicates auxiliar switch is in the middle position (pwm >1200, <1800)
-#define AUX_SWITCH_HIGH             2       // indicates auxiliar switch is in the high position (pwm >1800)
+#define RC_IN_SWITCH_LOW            0   // indicates RC input switch is in the low position (pwm <1200)
+#define RC_IN_SWITCH_MIDDLE         1   // indicates RC input switch is in the middle position (pwm >1200, <1800)
+#define RC_IN_SWITCH_HIGH           2   // indicates RC input switch is in the high position (pwm >1800)
 
-// Aux Switch enumeration
-enum aux_sw_func {
-    AUXSW_DO_NOTHING =           0,     // 0, aux switch disabled
+// RC Input Function enumeration
+enum rc_in_func {
+    RC_IN_DO_NOTHING =              0,  // rc input disabled
                                         // Enum values 1-9 saved for flight controls
-    AUXSW_FLIP =                10,     // flip
-    AUXSW_SIMPLE_MODE =         11,     // change to simple mode
-    AUXSW_RTL =                 12,     // change to RTL flight mode
-    AUXSW_SAVE_TRIM =           13,     // save current position as level
-    AUXSW_SAVE_WP =             14,     // save mission waypoint or RTL if in auto mode
-    AUXSW_CAMERA_TRIGGER =      15,     // trigger camera servo or relay
-    AUXSW_GROUND_RANGEFINDER =  16,     // allow enabling or disabling ground rangefinder in flight which helps avoid surface tracking when you are far above the ground
-    AUXSW_FENCE =               17,     // allow enabling or disabling fence in flight
-    AUXSW_RESETTOARMEDYAW =     18,     // changes yaw to be same as when quad was armed
-    AUXSW_SUPERSIMPLE_MODE =    19,     // change to simple mode in middle, super simple at top
-    AUXSW_ACRO_TRAINER =        20,     // low = disabled, middle = leveled, high = leveled and limited
-    AUXSW_SPRAYER =             21,     // enable/disable the crop sprayer
-    AUXSW_AUTO =                22,     // change to auto flight mode
-    AUXSW_AUTOTUNE =            23,     // auto tune
-    AUXSW_LAND =                24,     // change to LAND flight mode
-    AUXSW_EPM =                 25,     // Operate the EPM cargo gripper low=off, middle=neutral, high=on
-    AUXSW_PARACHUTE_ENABLE =    26,     // Parachute enable/disable
-    AUXSW_PARACHUTE_RELEASE =   27,     // Parachute release
-    AUXSW_PARACHUTE_3POS =      28,     // Parachute disable, enable, release with 3 position switch
-    AUXSW_MISSION_RESET =       29,     // Reset auto mission to start from first command
-    AUXSW_ATTCON_FEEDFWD =      30,     // enable/disable the roll and pitch rate feed forward
-    AUXSW_ATTCON_ACCEL_LIM =    31,     // enable/disable the roll, pitch and yaw accel limiting
-    AUXSW_RETRACT_MOUNT =       32,     // Retract Mount
-    AUXSW_RELAY =               33,     // Relay pin on/off (only supports first relay)
-    AUXSW_LANDING_GEAR =        34,     // Landing gear controller
-    AUXSW_MOTOR_ESTOP =         35,     // Emergency Stop Switch
-    AUXSW_MOTOR_INTERLOCK =     36,     // Motor On/Off switch
+    RC_IN_SW_FLIP =                10,  // flip
+    RC_IN_SW_SIMPLE_MODE =         11,  // change to simple mode
+    RC_IN_SW_RTL =                 12,  // change to RTL flight mode
+    RC_IN_SW_SAVE_TRIM =           13,  // save current position as level
+    RC_IN_SW_SAVE_WP =             14,  // save mission waypoint or RTL if in auto mode
+    RC_IN_SW_CAMERA_TRIGGER =      15,  // trigger camera servo or relay
+    RC_IN_SW_GROUND_RANGEFINDER =  16,  // allow enabling or disabling ground rangefinder in flight which helps avoid surface tracking when you are far above the ground
+    RC_IN_SW_FENCE =               17,  // allow enabling or disabling fence in flight
+    RC_IN_SW_RESETTOARMEDYAW =     18,  // changes yaw to be same as when quad was armed
+    RC_IN_SW_SUPERSIMPLE_MODE =    19,  // change to simple mode in middle, super simple at top
+    RC_IN_SW_ACRO_TRAINER =        20,  // low = disabled, middle = leveled, high = leveled and limited
+    RC_IN_SW_SPRAYER =             21,  // enable/disable the crop sprayer
+    RC_IN_SW_AUTO =                22,  // change to auto flight mode
+    RC_IN_SW_AUTOTUNE =            23,  // auto tune
+    RC_IN_SW_LAND =                24,  // change to LAND flight mode
+    RC_IN_SW_EPM =                 25,  // Operate the EPM cargo gripper low=off, middle=neutral, high=on
+    RC_IN_SW_PARACHUTE_ENABLE =    26,  // Parachute enable/disable
+    RC_IN_SW_PARACHUTE_RELEASE =   27,  // Parachute release
+    RC_IN_SW_PARACHUTE_3POS =      28,  // Parachute disable, enable, release with 3 position switch
+    RC_IN_SW_MISSION_RESET =       29,  // Reset auto mission to start from first command
+    RC_IN_SW_ATTCON_FEEDFWD =      30,  // enable/disable the roll and pitch rate feed forward
+    RC_IN_SW_ATTCON_ACCEL_LIM =    31,  // enable/disable the roll, pitch and yaw accel limiting
+    RC_IN_SW_RETRACT_MOUNT =       32,  // Retract Mount
+    RC_IN_SW_RELAY =               33,  // Relay pin on/off (only supports first relay)
+    RC_IN_SW_LANDING_GEAR =        34,  // Landing gear controller
+    RC_IN_SW_MOTOR_ESTOP =         35,  // Emergency Stop Switch
+    RC_IN_SW_MOTOR_INTERLOCK =     36,  // Motor On/Off switch
 };
 
 // Frame types

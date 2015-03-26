@@ -368,7 +368,7 @@ static struct {
     int8_t debounced_switch_position;   // currently used switch position
     int8_t last_switch_position;        // switch position in previous iteration
     uint32_t last_edge_time_ms;         // system time that switch position was last changed
-} control_switch_state;
+} flight_mode_switch_state;
 
 static RCMapper rcmap;
 
@@ -722,7 +722,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { update_optical_flow,   2,     20 },
 #endif
     { update_batt_compass,  40,     72 },
-    { read_aux_switches,    40,      5 },
+    { read_rc_input_switches,    40,      5 },
     { arm_motors_check,     40,      1 },
     { auto_trim,            40,     14 },
     { update_altitude,      40,    100 },
@@ -797,7 +797,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { update_optical_flow,   1,     100 },
 #endif
     { update_batt_compass,  10,     720 },
-    { read_aux_switches,    10,      50 },
+    { read_rc_input_switches,    10,      50 },
     { arm_motors_check,     10,      10 },
     { auto_trim,            10,     140 },
     { update_altitude,      10,    1000 },
@@ -968,7 +968,7 @@ static void rc_loop()
     // Read radio and 3-position switch on radio
     // -----------------------------------------
     read_radio();
-    read_control_switch();
+    read_flight_mode_switch();
 }
 
 // throttle_loop - should be run at 50 hz
