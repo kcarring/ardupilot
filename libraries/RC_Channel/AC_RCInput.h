@@ -15,7 +15,7 @@ public:
 
 // RC Input Function enumeration
 enum rc_in_func {
-    DO_NOTHING =              0,  // rc input disabled
+    NO_FUNCTION =             0,  // rc input disabled
     CTRL_ROLL =               1,  // Roll control input
     CTRL_PITCH =              2,  // Pitch control input
     CTRL_THROTTLE =           3,  // Throttle control input
@@ -50,8 +50,14 @@ enum rc_in_func {
     SW_MOTOR_INTERLOCK =     36,  // Motor On/Off switch
 };
 
-    ///Search for first channel with assigned function
+    //Search for first channel with assigned function
     uint8_t find_rc_input_func(int16_t func) const;
+
+    // check_if_rc_input_func_used - Check to see if any of the RC input switches are set to a given mode.
+    bool check_if_rc_input_func_used(int16_t check_function);
+
+    // check_duplicate_rc_input_func - Check to see if any RC input switch functions are duplicated
+    bool check_duplicate_rc_input_func();
 
     // accessors to get primary flight control channel assignments
     uint8_t roll_chan() {return _roll_chan;}
@@ -59,6 +65,16 @@ enum rc_in_func {
     uint8_t throttle_chan() {return _throttle_chan;}
     uint8_t yaw_chan() {return _yaw_chan;}
     uint8_t flight_mode_chan() {return _flight_mode_chan;}
+
+    // accessors to get auxiliary control functions
+    int16_t ch5_function() {return _ch5_function;}
+    int16_t ch6_function() {return _ch6_function;}
+    int16_t ch7_function() {return _ch7_function;}
+    int16_t ch8_function() {return _ch8_function;}
+    int16_t ch9_function() {return _ch9_function;}
+    int16_t ch10_function() {return _ch10_function;}
+    int16_t ch11_function() {return _ch11_function;}
+    int16_t ch12_function() {return _ch12_function;}
 
     void set_primary_control_channels();
 
