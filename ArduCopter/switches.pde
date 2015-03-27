@@ -50,7 +50,7 @@ static void read_flight_mode_switch()
                 }
             }
 
-            if(!check_if_rc_input_func_used(RC_IN_SW_SIMPLE_MODE) && !check_if_rc_input_func_used(RC_IN_SW_SUPERSIMPLE_MODE)) {
+            if(!rcin.check_if_rc_input_func_used(RCInput::SW_SIMPLE_MODE) && !rcin.check_if_rc_input_func_used(RCInput::SW_SUPERSIMPLE_MODE)) {
                 // if none of the RC input switch functions are set to Simple or Super Simple Mode then
                 // set Simple Mode using stored parameters from EEPROM
                 if (BIT_IS_SET(g.super_simple, switch_position)) {
@@ -70,37 +70,6 @@ static void read_flight_mode_switch()
     }
 
     flight_mode_switch_state.last_switch_position = switch_position;
-}
-
-// check_if_rc_input_func_used - Check to see if any of the RC input switches are set to a given mode.
-static bool check_if_rc_input_func_used(uint8_t rc_input_func_check)
-{
-    bool ret = g.ch7_option == rc_input_func_check || g.ch8_option == rc_input_func_check || g.ch9_option == rc_input_func_check 
-                || g.ch10_option == rc_input_func_check || g.ch11_option == rc_input_func_check || g.ch12_option == rc_input_func_check;
-
-    return ret;
-}
-
-// check_duplicate_rc_input_func - Check to see if any RC input switch functions are duplicated
-static bool check_duplicate_rc_input_func(void)
-{
-    bool ret = ((g.ch7_option != RC_IN_DO_NOTHING) && (g.ch7_option == g.ch8_option ||
-                g.ch7_option == g.ch9_option || g.ch7_option == g.ch10_option ||
-                g.ch7_option == g.ch11_option || g.ch7_option == g.ch12_option));
-
-    ret = ret || ((g.ch8_option != RC_IN_DO_NOTHING) && (g.ch8_option == g.ch9_option ||
-                    g.ch8_option == g.ch10_option || g.ch8_option == g.ch11_option ||
-                    g.ch8_option == g.ch12_option));
-
-    ret = ret || ((g.ch9_option != RC_IN_DO_NOTHING) && (g.ch9_option == g.ch10_option ||
-                    g.ch9_option == g.ch11_option || g.ch9_option == g.ch12_option));
-
-    ret = ret || ((g.ch10_option != RC_IN_DO_NOTHING) && (g.ch10_option == g.ch11_option ||
-                    g.ch10_option == g.ch12_option));
-
-    ret = ret || ((g.ch11_option != RC_IN_DO_NOTHING) && (g.ch11_option == g.ch12_option));
-
-    return ret;
 }
 
 static void reset_flight_mode_switch()
@@ -134,7 +103,7 @@ static void read_rc_input_switches()
         rc_in_switch.CH7_flag = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(g.ch7_option, rc_in_switch.CH7_flag);
+        do_rc_input_switch_function(rcin.ch7_function(), rc_in_switch.CH7_flag);
     }
 
     // check if Ch8 switch has changed position
@@ -144,7 +113,7 @@ static void read_rc_input_switches()
         rc_in_switch.CH8_flag = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(g.ch8_option, rc_in_switch.CH8_flag);
+        do_rc_input_switch_function(rcin.ch8_function(), rc_in_switch.CH8_flag);
     }
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
@@ -155,7 +124,7 @@ static void read_rc_input_switches()
         rc_in_switch.CH9_flag = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(g.ch9_option, rc_in_switch.CH9_flag);
+        do_rc_input_switch_function(rcin.ch9_function(), rc_in_switch.CH9_flag);
     }
 #endif
 
@@ -166,7 +135,7 @@ static void read_rc_input_switches()
         rc_in_switch.CH10_flag = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(g.ch10_option, rc_in_switch.CH10_flag);
+        do_rc_input_switch_function(rcin.ch10_function(), rc_in_switch.CH10_flag);
     }
 
     // check if Ch11 switch has changed position
@@ -176,7 +145,7 @@ static void read_rc_input_switches()
         rc_in_switch.CH11_flag = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(g.ch11_option, rc_in_switch.CH11_flag);
+        do_rc_input_switch_function(rcin.ch11_function(), rc_in_switch.CH11_flag);
     }
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
@@ -187,7 +156,7 @@ static void read_rc_input_switches()
         rc_in_switch.CH12_flag = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(g.ch12_option, rc_in_switch.CH12_flag);
+        do_rc_input_switch_function(rcin.ch12_function(), rc_in_switch.CH12_flag);
     }
 #endif
 }
@@ -208,74 +177,74 @@ static void init_rc_input_switches()
 #endif
 
     // initialise functions assigned to switches
-    init_rc_input_switch_function(g.ch7_option, rc_in_switch.CH7_flag);
-    init_rc_input_switch_function(g.ch8_option, rc_in_switch.CH8_flag);
-    init_rc_input_switch_function(g.ch10_option, rc_in_switch.CH10_flag);
-    init_rc_input_switch_function(g.ch11_option, rc_in_switch.CH11_flag);
+    init_rc_input_switch_function(rcin.ch7_function(), rc_in_switch.CH7_flag);
+    init_rc_input_switch_function(rcin.ch8_function(), rc_in_switch.CH8_flag);
+    init_rc_input_switch_function(rcin.ch10_function(), rc_in_switch.CH10_flag);
+    init_rc_input_switch_function(rcin.ch11_function(), rc_in_switch.CH11_flag);
 
     // ch9, ch12 only supported on some boards
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
-    init_rc_input_switch_function(g.ch9_option, rc_in_switch.CH9_flag);
-    init_rc_input_switch_function(g.ch12_option, rc_in_switch.CH12_flag);
+    init_rc_input_switch_function(rcin.ch9_function(), rc_in_switch.CH9_flag);
+    init_rc_input_switch_function(rcin.ch12_function(), rc_in_switch.CH12_flag);
 #endif
 }
 
 // init_rc_input_switch_function - initialize RC input switch functions
-static void init_rc_input_switch_function(int8_t ch_option, uint8_t ch_flag)
+static void init_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
 {    
     // init channel options
-    switch(ch_option) {
-        case RC_IN_SW_SIMPLE_MODE:
-        case RC_IN_SW_GROUND_RANGEFINDER:
-        case RC_IN_SW_FENCE:
-        case RC_IN_SW_RESETTOARMEDYAW:
-        case RC_IN_SW_SUPERSIMPLE_MODE:
-        case RC_IN_SW_ACRO_TRAINER:
-        case RC_IN_SW_EPM:
-        case RC_IN_SW_SPRAYER:
-        case RC_IN_SW_PARACHUTE_ENABLE:
-        case RC_IN_SW_PARACHUTE_3POS:      // we trust the vehicle will be disarmed so even if switch is in release position the chute will not release
-        case RC_IN_SW_RETRACT_MOUNT:
-        case RC_IN_SW_MISSION_RESET:
-        case RC_IN_SW_ATTCON_FEEDFWD:
-        case RC_IN_SW_ATTCON_ACCEL_LIM:
-        case RC_IN_SW_RELAY:
-        case RC_IN_SW_LANDING_GEAR:
-        case RC_IN_SW_MOTOR_ESTOP:
-            do_rc_input_switch_function(ch_option, ch_flag);
+    switch(ch_function) {
+        case RCInput::SW_SIMPLE_MODE:
+        case RCInput::SW_GROUND_RANGEFINDER:
+        case RCInput::SW_FENCE:
+        case RCInput::SW_RESETTOARMEDYAW:
+        case RCInput::SW_SUPERSIMPLE_MODE:
+        case RCInput::SW_ACRO_TRAINER:
+        case RCInput::SW_EPM:
+        case RCInput::SW_SPRAYER:
+        case RCInput::SW_PARACHUTE_ENABLE:
+        case RCInput::SW_PARACHUTE_3POS:      // we trust the vehicle will be disarmed so even if switch is in release position the chute will not release
+        case RCInput::SW_RETRACT_MOUNT:
+        case RCInput::SW_MISSION_RESET:
+        case RCInput::SW_ATTCON_FEEDFWD:
+        case RCInput::SW_ATTCON_ACCEL_LIM:
+        case RCInput::SW_RELAY:
+        case RCInput::SW_LANDING_GEAR:
+        case RCInput::SW_MOTOR_ESTOP:
+            do_rc_input_switch_function(ch_function, ch_flag);
             break;
 
-        case RC_IN_SW_MOTOR_INTERLOCK:
-            set_using_interlock(check_if_rc_input_func_used(RC_IN_SW_MOTOR_INTERLOCK));
-            do_rc_input_switch_function(ch_option, ch_flag);
+        case RCInput::SW_MOTOR_INTERLOCK:
+            set_using_interlock(rcin.check_if_rc_input_func_used(RCInput::SW_MOTOR_INTERLOCK));
+            do_rc_input_switch_function(ch_function, ch_flag);
             break;
             
     }
 }
 
 // do_rc_input_switch_function - implement the function invoked by the ch7 or ch8 switch
-static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
+static void do_rc_input_switch_function(int16_t ch_function, uint8_t ch_flag)
 {
 
     switch(ch_function) {
-        case RC_IN_SW_FLIP:
+        case RCInput::SW_FLIP:
             // flip if switch is on, positive throttle and we're actually flying
             if(ch_flag == RC_IN_SWITCH_HIGH) {
                 set_mode(FLIP);
             }
             break;
 
-        case RC_IN_SW_SIMPLE_MODE:
+        case RCInput::SW_SIMPLE_MODE:
             // low = simple mode off, middle or high position turns simple mode on
             set_simple_mode(ch_flag == RC_IN_SWITCH_HIGH || ch_flag == RC_IN_SWITCH_MIDDLE);
             break;
 
-        case RC_IN_SW_SUPERSIMPLE_MODE:
+        case RCInput::SW_SUPERSIMPLE_MODE:
             // low = simple mode off, middle = simple mode, high = super simple mode
             set_simple_mode(ch_flag);
             break;
 
-        case RC_IN_SW_RTL:
+        case RCInput::SW_RTL:
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 // engage RTL (if not possible we remain in current flight mode)
                 set_mode(RTL);
@@ -287,13 +256,13 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             }
             break;
 
-        case RC_IN_SW_SAVE_TRIM:
+        case RCInput::SW_SAVE_TRIM:
             if ((ch_flag == RC_IN_SWITCH_HIGH) && (control_mode <= ACRO) && (g.rc_3.control_in == 0)) {
                 save_trim();
             }
             break;
 
-        case RC_IN_SW_SAVE_WP:
+        case RCInput::SW_SAVE_WP:
             // save waypoint when switch is brought high
             if (ch_flag == RC_IN_SWITCH_HIGH) {
 
@@ -348,14 +317,14 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if CAMERA == ENABLED
-        case RC_IN_SW_CAMERA_TRIGGER:
+        case RCInput::SW_CAMERA_TRIGGER:
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 do_take_picture();
             }
             break;
 #endif
 
-        case RC_IN_SW_GROUND_RANGEFINDER:
+        case RCInput::SW_GROUND_RANGEFINDER:
             // enable or disable the sonar
 #if CONFIG_SONAR == ENABLED
             if (ch_flag == RC_IN_SWITCH_HIGH) {
@@ -367,7 +336,7 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if AC_FENCE == ENABLED
-        case RC_IN_SW_FENCE:
+        case RCInput::SW_FENCE:
             // enable or disable the fence
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 fence.enable(true);
@@ -379,7 +348,7 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
         // To-Do: add back support for this feature
-        //case RC_IN_SW_RESETTOARMEDYAW:
+        //case RCInput::SW_RESETTOARMEDYAW:
         //    if (ch_flag == RC_IN_SWITCH_HIGH) {
         //        set_yaw_mode(YAW_RESETTOARMEDYAW);
         //    }else{
@@ -387,7 +356,7 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
         //    }
         //    break;
 
-        case RC_IN_SW_ACRO_TRAINER:
+        case RCInput::SW_ACRO_TRAINER:
             switch(ch_flag) {
                 case RC_IN_SWITCH_LOW:
                     g.acro_trainer = ACRO_TRAINER_DISABLED;
@@ -404,7 +373,7 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             }
             break;
 #if EPM_ENABLED == ENABLED
-        case RC_IN_SW_EPM:
+        case RCInput::SW_EPM:
             switch(ch_flag) {
                 case RC_IN_SWITCH_LOW:
                     epm.release();
@@ -418,14 +387,14 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
 #if SPRAYER == ENABLED
-        case RC_IN_SW_SPRAYER:
+        case RCInput::SW_SPRAYER:
             sprayer.enable(ch_flag == RC_IN_SWITCH_HIGH);
             // if we are disarmed the pilot must want to test the pump
             sprayer.test_pump((ch_flag == RC_IN_SWITCH_HIGH) && !motors.armed());
             break;
 #endif
 
-        case RC_IN_SW_AUTO:
+        case RCInput::SW_AUTO:
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 set_mode(AUTO);
             }else{
@@ -437,7 +406,7 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if AUTOTUNE_ENABLED == ENABLED
-        case RC_IN_SW_AUTOTUNE:
+        case RCInput::SW_AUTOTUNE:
             // turn on auto tuner
             switch(ch_flag) {
                 case RC_IN_SWITCH_LOW:
@@ -455,7 +424,7 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
 
-        case RC_IN_SW_LAND:
+        case RCInput::SW_LAND:
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 set_mode(LAND);
             }else{
@@ -467,18 +436,18 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 
 #if PARACHUTE == ENABLED
-        case RC_IN_SW_PARACHUTE_ENABLE:
+        case RCInput::SW_PARACHUTE_ENABLE:
             // Parachute enable/disable
             parachute.enabled(ch_flag == RC_IN_SWITCH_HIGH);
             break;
 
-        case RC_IN_SW_PARACHUTE_RELEASE:
+        case RCInput::SW_PARACHUTE_RELEASE:
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 parachute_manual_release();
             }
             break;
 
-        case RC_IN_SW_PARACHUTE_3POS:
+        case RCInput::SW_PARACHUTE_3POS:
             // Parachute disable, enable, release with 3 position switch
             switch (ch_flag) {
                 case RC_IN_SWITCH_LOW:
@@ -497,24 +466,24 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
 
-        case RC_IN_SW_MISSION_RESET:
+        case RCInput::SW_MISSION_RESET:
             if (ch_flag == RC_IN_SWITCH_HIGH) {
                 mission.reset();
             }
             break;
 
-        case RC_IN_SW_ATTCON_FEEDFWD:
+        case RCInput::SW_ATTCON_FEEDFWD:
             // enable or disable feed forward
             attitude_control.bf_feedforward(ch_flag == RC_IN_SWITCH_HIGH);
             break;
 
-        case RC_IN_SW_ATTCON_ACCEL_LIM:
+        case RCInput::SW_ATTCON_ACCEL_LIM:
             // enable or disable accel limiting by restoring defaults
             attitude_control.accel_limiting(ch_flag == RC_IN_SWITCH_HIGH);
             break;
         
 #if MOUNT == ENABLE
-        case RC_IN_SW_RETRACT_MOUNT:
+        case RCInput::SW_RETRACT_MOUNT:
             switch (ch_flag) {
                 case RC_IN_SWITCH_HIGH:
                     camera_mount.set_mode(MAV_MOUNT_MODE_RETRACT);
@@ -526,11 +495,11 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             break;
 #endif
 
-        case RC_IN_SW_RELAY:
+        case RCInput::SW_RELAY:
             ServoRelayEvents.do_set_relay(0, ch_flag == RC_IN_SWITCH_HIGH);
             break;
 
-        case RC_IN_SW_LANDING_GEAR:
+        case RCInput::SW_LANDING_GEAR:
             switch (ch_flag) {
                 case RC_IN_SWITCH_LOW:
                     landinggear.set_cmd_mode(LandingGear_Deploy);
@@ -544,12 +513,12 @@ static void do_rc_input_switch_function(int8_t ch_function, uint8_t ch_flag)
             }
             break;
 
-        case RC_IN_SW_MOTOR_ESTOP:
+        case RCInput::SW_MOTOR_ESTOP:
             // Turn on E-Stop logic when channel is high
             set_motor_estop(ch_flag == RC_IN_SWITCH_HIGH);
             break;
 
-        case RC_IN_SW_MOTOR_INTERLOCK:
+        case RCInput::SW_MOTOR_INTERLOCK:
             // Turn on when above LOW, because channel will also be used for speed
             // control signal in tradheli
             motors.set_interlock(ch_flag == RC_IN_SWITCH_HIGH || ch_flag == RC_IN_SWITCH_MIDDLE);

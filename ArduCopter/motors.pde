@@ -170,7 +170,7 @@ static bool init_arm_motors(bool arming_from_gcs)
     }
 
     // check if we are using motor interlock control on an aux switch
-    set_using_interlock(check_if_rc_input_func_used(RC_IN_SW_MOTOR_INTERLOCK));
+    set_using_interlock(rcin.check_if_rc_input_func_used(RCInput::SW_MOTOR_INTERLOCK));
 
     // if we are using motor interlock switch and it's enabled, fail to arm
     if (ap.using_interlock && motors.get_interlock()){
@@ -181,10 +181,10 @@ static bool init_arm_motors(bool arming_from_gcs)
 
     // if we are not E-Stop switch option, force Estop false to ensure motors
     // can run normally
-    if (!check_if_rc_input_func_used(RC_IN_SW_MOTOR_ESTOP)){
+    if (!rcin.check_if_rc_input_func_used(RCInput::SW_MOTOR_ESTOP)){
         set_motor_estop(false);
     // if we are using motor Estop switch, it must not be in Estop position
-    } else if (check_if_rc_input_func_used(RC_IN_SW_MOTOR_ESTOP) && ap.motor_estop){
+    } else if (rcin.check_if_rc_input_func_used(RCInput::SW_MOTOR_ESTOP) && ap.motor_estop){
         gcs_send_text_P(SEVERITY_HIGH,PSTR("Arm: Motor Emergency Stopped"));
         AP_Notify::flags.armed = false;
         return false;
@@ -249,7 +249,7 @@ static bool pre_arm_checks(bool display_failure)
     // if it is, switch needs to be in disabled position to arm
     // otherwise exit immediately.  This check to be repeated, 
     // as state can change at any time.
-    set_using_interlock(check_if_rc_input_func_used(RC_IN_SW_MOTOR_INTERLOCK));
+    set_using_interlock(rcin.check_if_rc_input_func_used(RCInput::SW_MOTOR_INTERLOCK));
     if (ap.using_interlock && motors.get_interlock()){
         if (display_failure) {
             gcs_send_text_P(SEVERITY_HIGH,PSTR("PreArm: Motor Interlock Enabled"));
@@ -259,7 +259,7 @@ static bool pre_arm_checks(bool display_failure)
 
     // if we are using Motor E-Stop aux switch, check it is not enabled 
     // and warn if it is
-    if (check_if_rc_input_func_used(RC_IN_SW_MOTOR_ESTOP) && ap.motor_estop){
+    if (rcin.check_if_rc_input_func_used(RCInput::SW_MOTOR_ESTOP) && ap.motor_estop){
         if (display_failure) {
             gcs_send_text_P(SEVERITY_HIGH,PSTR("PreArm: Motor Emergency Stopped"));
         }
@@ -459,7 +459,7 @@ static bool pre_arm_checks(bool display_failure)
     if ((g.arming_check == ARMING_CHECK_ALL) || (g.arming_check & ARMING_CHECK_PARAMETERS)) {
 
         // ensure ch7 and ch8 have different functions
-        if (check_duplicate_rc_input_func()) {
+        if (rcin.check_duplicate_rc_input_func()) {
             if (display_failure) {
                 gcs_send_text_P(SEVERITY_HIGH,PSTR("PreArm: Duplicate Aux Switch Options"));
             }

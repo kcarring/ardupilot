@@ -4,7 +4,7 @@
 static void landinggear_update(){
 
     // If landing gear control is active, run update function.
-    if (check_if_rc_input_func_used(RC_IN_SW_LANDING_GEAR)){
+    if (rcin.check_if_rc_input_func_used(RCInput::SW_LANDING_GEAR)){
 
         // last status (deployed or retracted) used to check for changes
         static bool last_deploy_status;

@@ -97,7 +97,7 @@ public:
         k_param_pilot_velocity_z_max,
         k_param_circle_rate,                // deprecated - remove
         k_param_sonar_gain,
-        k_param_ch8_option,
+        k_param_ch8_option,                 // deprecated
         k_param_arming_check,
         k_param_sprayer,
         k_param_angle_max,
@@ -185,10 +185,6 @@ public:
         k_param_serial2_baud_old, // deprecated
         k_param_serial2_protocol, // deprecated
         k_param_serial_manager,  // 119
-        k_param_ch9_option,
-        k_param_ch10_option,
-        k_param_ch11_option,
-        k_param_ch12_option,     // 123
 
         //
         // 140: Sensor parameters
@@ -205,7 +201,7 @@ public:
         k_param_frame_orientation,
         k_param_optflow_enabled,    // deprecated
         k_param_fs_batt_voltage,
-        k_param_ch7_option,
+        k_param_ch7_option,         // deprecated
         k_param_auto_slew_rate,     // deprecated - can be deleted
         k_param_sonar_type_old,     // deprecated
         k_param_super_simple = 155,
@@ -394,12 +390,6 @@ public:
     AP_Int16        radio_tuning_high;
     AP_Int16        radio_tuning_low;
     AP_Int8         frame_orientation;
-    AP_Int16        ch7_option;
-    AP_Int16        ch8_option;
-    AP_Int16        ch9_option;
-    AP_Int16        ch10_option;
-    AP_Int16        ch11_option;
-    AP_Int16        ch12_option;
     AP_Int8         arming_check;
 
     AP_Int8         land_repositioning;
