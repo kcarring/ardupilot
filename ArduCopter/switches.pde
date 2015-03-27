@@ -2,20 +2,6 @@
 
 #define FLIGHT_MODE_SWITCH_DEBOUNCE_TIME_MS  200
 
-// RC Input Switch Flags:
-static union {
-    struct {
-        uint8_t CH6_flag            : 2; // 0, 1    // ch6 switch : 0 is low or false, 1 is center or true, 2 is high
-        uint8_t CH7_flag            : 2; // 2, 3    // ch7 switch : 0 is low or false, 1 is center or true, 2 is high
-        uint8_t CH8_flag            : 2; // 4, 5    // ch8 switch : 0 is low or false, 1 is center or true, 2 is high
-        uint8_t CH9_flag            : 2; // 6, 7    // ch9 switch : 0 is low or false, 1 is center or true, 2 is high
-        uint8_t CH10_flag           : 2; // 8, 9    // ch10 switch : 0 is low or false, 1 is center or true, 2 is high
-        uint8_t CH11_flag           : 2; // 10,11   // ch11 switch : 0 is low or false, 1 is center or true, 2 is high
-        uint8_t CH12_flag           : 2; // 12,13   // ch12 switch : 0 is low or false, 1 is center or true, 2 is high
-    };
-    uint32_t value;
-} rc_in_switch;
-
 static void read_flight_mode_switch()
 {
     uint32_t tnow_ms = millis();
@@ -98,65 +84,65 @@ static void read_rc_input_switches()
 
     // check if ch7 switch has changed position
     switch_position = read_3pos_switch(g.rc_7.radio_in);
-    if (rc_in_switch.CH7_flag != switch_position) {
+    if (rcin.switch_flag.ch7 != switch_position) {
         // set the CH7 flag
-        rc_in_switch.CH7_flag = switch_position;
+        rcin.switch_flag.ch7 = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(rcin.ch7_function(), rc_in_switch.CH7_flag);
+        do_rc_input_switch_function(rcin.ch7_function(), rcin.switch_flag.ch7);
     }
 
     // check if Ch8 switch has changed position
     switch_position = read_3pos_switch(g.rc_8.radio_in);
-    if (rc_in_switch.CH8_flag != switch_position) {
+    if (rcin.switch_flag.ch8 != switch_position) {
         // set the CH8 flag
-        rc_in_switch.CH8_flag = switch_position;
+        rcin.switch_flag.ch8 = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(rcin.ch8_function(), rc_in_switch.CH8_flag);
+        do_rc_input_switch_function(rcin.ch8_function(), rcin.switch_flag.ch8);
     }
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
     // check if Ch9 switch has changed position
     switch_position = read_3pos_switch(g.rc_9.radio_in);
-    if (rc_in_switch.CH9_flag != switch_position) {
+    if (rcin.switch_flag.ch9 != switch_position) {
         // set the CH9 flag
-        rc_in_switch.CH9_flag = switch_position;
+        rcin.switch_flag.ch9 = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(rcin.ch9_function(), rc_in_switch.CH9_flag);
+        do_rc_input_switch_function(rcin.ch9_function(), rcin.switch_flag.ch9);
     }
 #endif
 
     // check if Ch10 switch has changed position
     switch_position = read_3pos_switch(g.rc_10.radio_in);
-    if (rc_in_switch.CH10_flag != switch_position) {
+    if (rcin.switch_flag.ch10 != switch_position) {
         // set the CH10 flag
-        rc_in_switch.CH10_flag = switch_position;
+        rcin.switch_flag.ch10 = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(rcin.ch10_function(), rc_in_switch.CH10_flag);
+        do_rc_input_switch_function(rcin.ch10_function(), rcin.switch_flag.ch10);
     }
 
     // check if Ch11 switch has changed position
     switch_position = read_3pos_switch(g.rc_11.radio_in);
-    if (rc_in_switch.CH11_flag != switch_position) {
+    if (rcin.switch_flag.ch11 != switch_position) {
         // set the CH11 flag
-        rc_in_switch.CH11_flag = switch_position;
+        rcin.switch_flag.ch11 = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(rcin.ch11_function(), rc_in_switch.CH11_flag);
+        do_rc_input_switch_function(rcin.ch11_function(), rcin.switch_flag.ch11);
     }
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
     // check if Ch12 switch has changed position
     switch_position = read_3pos_switch(g.rc_12.radio_in);
-    if (rc_in_switch.CH12_flag != switch_position) {
+    if (rcin.switch_flag.ch12 != switch_position) {
         // set the CH12 flag
-        rc_in_switch.CH12_flag = switch_position;
+        rcin.switch_flag.ch12 = switch_position;
 
         // invoke the appropriate function
-        do_rc_input_switch_function(rcin.ch12_function(), rc_in_switch.CH12_flag);
+        do_rc_input_switch_function(rcin.ch12_function(), rcin.switch_flag.ch12);
     }
 #endif
 }
@@ -165,27 +151,27 @@ static void read_rc_input_switches()
 static void init_rc_input_switches()
 {
     // set the CH7 ~ CH12 flags
-    rc_in_switch.CH7_flag = read_3pos_switch(g.rc_7.radio_in);
-    rc_in_switch.CH8_flag = read_3pos_switch(g.rc_8.radio_in);
-    rc_in_switch.CH10_flag = read_3pos_switch(g.rc_10.radio_in);
-    rc_in_switch.CH11_flag = read_3pos_switch(g.rc_11.radio_in);
+    rcin.switch_flag.ch7 = read_3pos_switch(g.rc_7.radio_in);
+    rcin.switch_flag.ch8 = read_3pos_switch(g.rc_8.radio_in);
+    rcin.switch_flag.ch10 = read_3pos_switch(g.rc_10.radio_in);
+    rcin.switch_flag.ch11 = read_3pos_switch(g.rc_11.radio_in);
 
     // ch9, ch12 only supported on some boards
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
-    rc_in_switch.CH9_flag = read_3pos_switch(g.rc_9.radio_in);
-    rc_in_switch.CH12_flag = read_3pos_switch(g.rc_12.radio_in);
+    rcin.switch_flag.ch9 = read_3pos_switch(g.rc_9.radio_in);
+    rcin.switch_flag.ch12 = read_3pos_switch(g.rc_12.radio_in);
 #endif
 
     // initialise functions assigned to switches
-    init_rc_input_switch_function(rcin.ch7_function(), rc_in_switch.CH7_flag);
-    init_rc_input_switch_function(rcin.ch8_function(), rc_in_switch.CH8_flag);
-    init_rc_input_switch_function(rcin.ch10_function(), rc_in_switch.CH10_flag);
-    init_rc_input_switch_function(rcin.ch11_function(), rc_in_switch.CH11_flag);
+    init_rc_input_switch_function(rcin.ch7_function(), rcin.switch_flag.ch7);
+    init_rc_input_switch_function(rcin.ch8_function(), rcin.switch_flag.ch8);
+    init_rc_input_switch_function(rcin.ch10_function(), rcin.switch_flag.ch10);
+    init_rc_input_switch_function(rcin.ch11_function(), rcin.switch_flag.ch11);
 
     // ch9, ch12 only supported on some boards
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
-    init_rc_input_switch_function(rcin.ch9_function(), rc_in_switch.CH9_flag);
-    init_rc_input_switch_function(rcin.ch12_function(), rc_in_switch.CH12_flag);
+    init_rc_input_switch_function(rcin.ch9_function(), rcin.switch_flag.ch9);
+    init_rc_input_switch_function(rcin.ch12_function(), rcin.switch_flag.ch12);
 #endif
 }
 
