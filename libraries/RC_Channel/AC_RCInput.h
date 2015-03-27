@@ -53,9 +53,27 @@ enum rc_in_func {
     ///Search for first channel with assigned function
     uint8_t find_rc_input_func(int16_t func) const;
 
+    // accessors to get primary flight control channel assignments
+    uint8_t roll_chan() {return _roll_chan;}
+    uint8_t pitch_chan() {return _pitch_chan;}
+    uint8_t throttle_chan() {return _throttle_chan;}
+    uint8_t yaw_chan() {return _yaw_chan;}
+    uint8_t flight_mode_chan() {return _flight_mode_chan;}
+
+    void set_primary_control_channels();
+
     static const struct AP_Param::GroupInfo var_info[];
 
 private:
+
+    // Primary flight control channel assignments
+    // These should be locked after arming
+    uint8_t _roll_chan;
+    uint8_t _pitch_chan;
+    uint8_t _throttle_chan;
+    uint8_t _yaw_chan;
+    uint8_t _flight_mode_chan;
+
     // channel mappings
     AP_Int16 _ch1_function;
     AP_Int16 _ch2_function;
