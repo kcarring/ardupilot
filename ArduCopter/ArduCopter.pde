@@ -141,7 +141,7 @@
 #include <AC_Fence.h>           // Arducopter Fence library
 #include <SITL.h>               // software in the loop support
 #include <AP_Scheduler.h>       // main loop scheduler
-#include <AP_RCMapper.h>        // RC input mapping library
+#include <AC_RCInput.h>         // RC input function library
 #include <AP_Notify.h>          // Notify library
 #include <AP_BattMonitor.h>     // Battery monitor library
 #include <AP_BoardConfig.h>     // board configuration library
@@ -370,7 +370,7 @@ static struct {
     uint32_t last_edge_time_ms;         // system time that switch position was last changed
 } flight_mode_switch_state;
 
-static RCMapper rcmap;
+static RCInput rcin;
 
 // board specific config
 static AP_BoardConfig BoardConfig;

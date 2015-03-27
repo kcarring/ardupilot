@@ -950,9 +950,9 @@ const AP_Param::Info var_info[] PROGMEM = {
     GOBJECT(motors, "MOT_",         AP_Motors),
 #endif
 
-    // @Group: RCMAP_
-    // @Path: ../libraries/AP_RCMapper/AP_RCMapper.cpp
-    GOBJECT(rcmap, "RCMAP_",        RCMapper),
+    // @Group: RCIN_
+    // @Path: ../libraries/RC_Channel/AC_RCInput.cpp
+    GOBJECT(rcin, "RCIN_",        RCInput),
 
 #if AP_AHRS_NAVEKF_AVAILABLE
     // @Group: EKF_
