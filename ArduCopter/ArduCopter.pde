@@ -965,6 +965,12 @@ static void fast_loop()
 // called at 100hz
 static void rc_loop()
 {
+
+    // allow reassignment of primary control inputs until arming occurs, then they are locked
+    if (!motors.armed()){
+        rcin.set_primary_control_channels();
+    }
+
     // Read radio and 3-position switch on radio
     // -----------------------------------------
     read_radio();

@@ -92,13 +92,13 @@ static void read_radio()
         ap.new_radio_frame = true;
         uint16_t periods[8];
         hal.rcin->read(periods,8);
-        g.rc_1.set_pwm(periods[rcin.find_rc_input_func(RCInput::CTRL_ROLL)-1]);
-        g.rc_2.set_pwm(periods[rcin.find_rc_input_func(RCInput::CTRL_PITCH)-1]);
+        g.rc_1.set_pwm(periods[rcin.roll_chan()-1]);
+        g.rc_2.set_pwm(periods[rcin.pitch_chan()-1]);
 
-        set_throttle_and_failsafe(periods[rcin.find_rc_input_func(RCInput::CTRL_THROTTLE)-1]);
+        set_throttle_and_failsafe(periods[rcin.throttle_chan()-1]);
         set_throttle_zero_flag(g.rc_3.control_in);
 
-        g.rc_4.set_pwm(periods[rcin.find_rc_input_func(RCInput::CTRL_YAW)-1]);
+        g.rc_4.set_pwm(periods[rcin.yaw_chan()-1]);
         g.rc_5.set_pwm(periods[4]);
         g.rc_6.set_pwm(periods[5]);
         g.rc_7.set_pwm(periods[6]);
