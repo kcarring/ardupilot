@@ -6,14 +6,8 @@ static void read_flight_mode_switch()
 {
     uint32_t tnow_ms = millis();
 
-    // calculate position of flight mode switch
-    int8_t switch_position;
-    if      (g.rc_5.radio_in < 1231) switch_position = 0;
-    else if (g.rc_5.radio_in < 1361) switch_position = 1;
-    else if (g.rc_5.radio_in < 1491) switch_position = 2;
-    else if (g.rc_5.radio_in < 1621) switch_position = 3;
-    else if (g.rc_5.radio_in < 1750) switch_position = 4;
-    else switch_position = 5;
+    // get position of flight mode switch
+    uint8_t switch_position = rcin.get_flight_mode_switch_position();
 
     // store time that switch last moved
     if(flight_mode_switch_state.last_switch_position != switch_position) {
