@@ -93,10 +93,23 @@ const AP_Param::GroupInfo RCInput::var_info[] PROGMEM = {
 };
 
 // object constructor.
-RCInput::RCInput(void)
-{
-    AP_Param::setup_object_defaults(this, var_info);
-}
+RCInput::RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channel& rc_4, RC_Channel& rc_5, RC_Channel& rc_6, RC_Channel& rc_7, RC_Channel& rc_8, RC_Channel& rc_9,
+            RC_Channel& rc_10, RC_Channel& rc_11, RC_Channel& rc_12):
+    _rc_1(rc_1),
+    _rc_2(rc_2),
+    _rc_3(rc_3),
+    _rc_4(rc_4),
+    _rc_5(rc_5),
+    _rc_6(rc_6),
+    _rc_7(rc_7),
+    _rc_8(rc_8),
+    _rc_9(rc_9),
+    _rc_10(rc_10),
+    _rc_11(rc_11),
+    _rc_12(rc_12)
+    {
+        AP_Param::setup_object_defaults(this, var_info);
+    }
 
 //Search for first channel with assigned function
 uint8_t RCInput::find_rc_input_func(int16_t func) const

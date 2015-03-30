@@ -5,13 +5,15 @@
 #include <inttypes.h>
 #include <AP_Common.h>
 #include <AP_Param.h>
+#include <RC_Channel.h>     // RC Channel Library
 
 class RCInput
 {
 public:
     /// Constructor
     ///
-    RCInput();
+    RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channel& rc_4, RC_Channel& rc_5, RC_Channel& rc_6, RC_Channel& rc_7, RC_Channel& rc_8, RC_Channel& rc_9,
+            RC_Channel& rc_10, RC_Channel& rc_11, RC_Channel& rc_12);
 
     // RC Input Function enumeration
     enum rc_in_func {
@@ -115,5 +117,19 @@ private:
     AP_Int16 _ch10_function;
     AP_Int16 _ch11_function;
     AP_Int16 _ch12_function;
+
+    // RC Input Channel Objects
+    RC_Channel&     _rc_1;
+    RC_Channel&     _rc_2;
+    RC_Channel&     _rc_3;
+    RC_Channel&     _rc_4;
+    RC_Channel&     _rc_5;
+    RC_Channel&     _rc_6;
+    RC_Channel&     _rc_7;
+    RC_Channel&     _rc_8;
+    RC_Channel&     _rc_9;
+    RC_Channel&     _rc_10;
+    RC_Channel&     _rc_11;
+    RC_Channel&     _rc_12;
 };
 #endif

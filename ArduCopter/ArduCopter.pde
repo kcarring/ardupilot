@@ -370,7 +370,7 @@ static struct {
     uint32_t last_edge_time_ms;         // system time that switch position was last changed
 } flight_mode_switch_state;
 
-static RCInput rcin;
+static RCInput rcin(g.rc_1, g.rc_2, g.rc_3, g.rc_4, g.rc_5, g.rc_6, g.rc_7, g.rc_8, g.rc_9, g.rc_10, g.rc_11, g.rc_12);
 
 // board specific config
 static AP_BoardConfig BoardConfig;
