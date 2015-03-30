@@ -111,6 +111,52 @@ RCInput::RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channe
         AP_Param::setup_object_defaults(this, var_info);
     }
 
+// get_flight_mode_switch_position - Determine position of flight mode switch and return.
+uint8_t RCInput::get_flight_mode_switch_position()
+{
+    // Initialize this as 2000, so if no switch is assigned, user
+    // will get FM 5 as default.
+    uint16_t pwm_value = 2000;
+
+    switch(flight_mode_chan()){
+        case 5:
+            pwm_value = _rc_5.radio_in;
+            break;
+        case 6:
+            pwm_value = _rc_6.radio_in;
+            break;
+        case 7:
+            pwm_value = _rc_7.radio_in;
+            break;
+        case 8:
+            pwm_value = _rc_8.radio_in;
+            break;
+        case 9:
+            pwm_value = _rc_9.radio_in;
+            break;
+        case 10:
+            pwm_value = _rc_10.radio_in;
+            break;
+        case 11:
+            pwm_value = _rc_11.radio_in;
+            break;
+        case 12:
+            pwm_value = _rc_12.radio_in;
+            break;
+    }
+
+    uint8_t switch_position;
+    if      (pwm_value < 1231) switch_position = 0;
+    else if (pwm_value < 1361) switch_position = 1;
+    else if (pwm_value < 1491) switch_position = 2;
+    else if (pwm_value < 1621) switch_position = 3;
+    else if (pwm_value < 1750) switch_position = 4;
+    else switch_position = 5;
+
+    return switch_position;
+}
+        
+
 //Search for first channel with assigned function
 uint8_t RCInput::find_rc_input_func(int16_t func) const
 {

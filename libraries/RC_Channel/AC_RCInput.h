@@ -73,6 +73,9 @@ public:
     // check_duplicate_rc_input_func - Check to see if any RC input switch functions are duplicated
     bool check_duplicate_rc_input_func();
 
+    // get_flight_mode_switch_position - Determine position of flight mode switch and return.
+    uint8_t get_flight_mode_switch_position();
+
     // accessors to get primary flight control channel assignments
     uint8_t roll_chan() {return _roll_chan;}
     uint8_t pitch_chan() {return _pitch_chan;}
