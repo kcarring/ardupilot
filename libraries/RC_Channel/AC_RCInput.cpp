@@ -89,6 +89,18 @@ const AP_Param::GroupInfo RCInput::var_info[] PROGMEM = {
     // @User: Standard
     AP_GROUPINFO("CH12_FUNC", 11, RCInput, _ch12_function, NO_FUNCTION),
 
+    // @Param: TUNE_LOW
+    // @DisplayName: Tuning minimum
+    // @Description: The minimum value that will be applied to the parameter currently being tuned
+    // @User: Standard
+    AP_GROUPINFO("TUNE_1_LOW", 14, RCInput, _tuning_1_low, 0),
+
+    // @Param: TUNE_HIGH
+    // @DisplayName: Tuning maximum
+    // @Description: The maximum value that will be applied to the parameter currently being tuned
+    // @User: Standard
+    AP_GROUPINFO("TUNE_1_HIGH", 15, RCInput, _tuning_1_high, 1),
+
     AP_GROUPEND
 };
 
@@ -114,36 +126,9 @@ RCInput::RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channe
 // get_flight_mode_switch_position - Determine position of flight mode switch and return.
 uint8_t RCInput::get_flight_mode_switch_position()
 {
-    // Initialize this as 2000, so if no switch is assigned, user
-    // will get FM 5 as default.
-    uint16_t pwm_value = 2000;
-
-    switch(flight_mode_chan()){
-        case 5:
-            pwm_value = _rc_5.radio_in;
-            break;
-        case 6:
-            pwm_value = _rc_6.radio_in;
-            break;
-        case 7:
-            pwm_value = _rc_7.radio_in;
-            break;
-        case 8:
-            pwm_value = _rc_8.radio_in;
-            break;
-        case 9:
-            pwm_value = _rc_9.radio_in;
-            break;
-        case 10:
-            pwm_value = _rc_10.radio_in;
-            break;
-        case 11:
-            pwm_value = _rc_11.radio_in;
-            break;
-        case 12:
-            pwm_value = _rc_12.radio_in;
-            break;
-    }
+    // Get fresh channel data
+    refresh_channel_data(flight_mode_chan());
+    int16_t pwm_value = channel[flight_mode_chan()].radio_in;
 
     uint8_t switch_position;
     if      (pwm_value < 1231) switch_position = 0;
@@ -155,7 +140,85 @@ uint8_t RCInput::get_flight_mode_switch_position()
 
     return switch_position;
 }
-        
+
+// get_tuning_value_1 - return tuning value for tuning channel 1.
+float RCInput::get_tuning_value_1 (){
+
+    // Get fresh channel data
+    refresh_channel_data(_tuning_chan_1);
+    float pwm_value = channel[_tuning_chan_1].radio_in;
+    float pwm_min = channel[_tuning_chan_1].radio_min;
+    float pwm_max = channel[_tuning_chan_1].radio_max;
+
+    return (pwm_value - pwm_min) * (_tuning_1_high - _tuning_1_low) / (pwm_max - pwm_min) + _tuning_1_low;
+}
+
+void RCInput::refresh_channel_data(uint8_t chan){
+
+    switch(chan){
+        case 1:
+            channel[1].radio_in = _rc_1.radio_in;
+            channel[1].radio_min = _rc_1.radio_min;
+            channel[1].radio_max = _rc_1.radio_max;
+            break;
+        case 2:
+            channel[2].radio_in = _rc_2.radio_in;
+            channel[2].radio_min = _rc_2.radio_min;
+            channel[2].radio_max = _rc_2.radio_max;
+            break;
+        case 3:
+            channel[3].radio_in = _rc_3.radio_in;
+            channel[3].radio_min = _rc_3.radio_min;
+            channel[3].radio_max = _rc_3.radio_max;
+            break;
+        case 4:
+            channel[4].radio_in = _rc_4.radio_in;
+            channel[4].radio_min = _rc_4.radio_min;
+            channel[4].radio_max = _rc_4.radio_max;
+            break;
+        case 5:
+            channel[5].radio_in = _rc_5.radio_in;
+            channel[5].radio_min = _rc_5.radio_min;
+            channel[5].radio_max = _rc_5.radio_max;
+            break;
+        case 6:
+            channel[6].radio_in = _rc_6.radio_in;
+            channel[6].radio_min = _rc_6.radio_min;
+            channel[6].radio_max = _rc_6.radio_max;
+            break;
+        case 7:
+            channel[7].radio_in = _rc_7.radio_in;
+            channel[7].radio_min = _rc_7.radio_min;
+            channel[7].radio_max = _rc_7.radio_max;
+            break;
+        case 8:
+            channel[8].radio_in = _rc_8.radio_in;
+            channel[8].radio_min = _rc_8.radio_min;
+            channel[8].radio_max = _rc_8.radio_max;
+            break;
+        case 9:
+            channel[9].radio_in = _rc_9.radio_in;
+            channel[9].radio_min = _rc_9.radio_min;
+            channel[9].radio_max = _rc_9.radio_max;
+            break;
+        case 10:
+            channel[10].radio_in = _rc_10.radio_in;
+            channel[10].radio_min = _rc_10.radio_min;
+            channel[10].radio_max = _rc_10.radio_max;
+            break;
+        case 11:
+            channel[11].radio_in = _rc_11.radio_in;
+            channel[11].radio_min = _rc_11.radio_min;
+            channel[11].radio_max = _rc_11.radio_max;
+            break;
+        case 12:
+            channel[12].radio_in = _rc_12.radio_in;
+            channel[12].radio_min = _rc_12.radio_min;
+            channel[12].radio_max = _rc_12.radio_max;
+            break;
+    }
+}
+
 
 //Search for first channel with assigned function
 uint8_t RCInput::find_rc_input_func(int16_t func) const
@@ -198,6 +261,41 @@ void RCInput::set_primary_control_channels()
     _throttle_chan = find_rc_input_func(CTRL_THROTTLE);
     _yaw_chan = find_rc_input_func(CTRL_YAW);
     _flight_mode_chan = find_rc_input_func(SW_FLIGHT_MODE);
+
+    if (_ch5_function > 100){
+        _tuning_chan_1 = 5;
+        _tuning_function_1 = _ch5_function;
+    } else if (_ch6_function > 100){
+        _tuning_chan_1 = 6;
+        _tuning_function_1 = _ch6_function;
+    } else if (_ch7_function > 100){
+        _tuning_chan_1 = 7;
+        _tuning_function_1 = _ch7_function;
+    } else if (_ch8_function > 100){
+        _tuning_chan_1 = 8;
+        _tuning_function_1 = _ch8_function;
+    } else if (_ch9_function > 100){
+        _tuning_chan_1 = 9;
+        _tuning_function_1 = _ch9_function;
+    } else if (_ch10_function > 100){
+        _tuning_chan_1 = 10;
+        _tuning_function_1 = _ch10_function;
+    } else if (_ch11_function > 100){
+        _tuning_chan_1 = 11;
+        _tuning_function_1 = _ch11_function;
+    } else if (_ch12_function > 100){
+        _tuning_chan_1 = 12;
+        _tuning_function_1 = _ch12_function;
+    } else {
+        _tuning_chan_1 = 0;
+        _tuning_function_1 = 0;
+    }
+
+    if (_tuning_chan_1 > 0){
+        _num_tuning_channels = 1;
+    } else {
+        _num_tuning_channels = 0;
+    }
 }
 
 // check_if_rc_input_func_used - Check to see if any of the RC input switches are set to a given mode.
