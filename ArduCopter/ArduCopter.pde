@@ -966,11 +966,6 @@ static void fast_loop()
 static void rc_loop()
 {
 
-    // allow reassignment of primary control inputs until arming occurs, then they are locked
-    if (!motors.armed()){
-        rcin.set_primary_control_channels();
-    }
-
     // Read radio and 3-position switch on radio
     // -----------------------------------------
     read_radio();
@@ -1124,6 +1119,9 @@ static void one_hz_loop()
 
         // check the user hasn't updated the frame orientation
         motors.set_frame_orientation(g.frame_orientation);
+
+        // allow reassignment of primary control inputs until arming occurs, then they are locked
+        rcin.set_primary_control_channels();
     }
 
     // update assigned functions and enable auxiliar servos

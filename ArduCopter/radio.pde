@@ -20,6 +20,9 @@ static void default_dead_zones()
 
 static void init_rc_in()
 {
+    // get initial control assignements
+    rcin.set_primary_control_channels();
+
     // set rc channel ranges
     g.rc_1.set_angle(ROLL_PITCH_INPUT_MAX);
     g.rc_2.set_angle(ROLL_PITCH_INPUT_MAX);
