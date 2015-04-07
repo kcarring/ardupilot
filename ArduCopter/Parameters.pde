@@ -322,20 +322,6 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Values: 0:None, 101:Stab Roll/Pitch kP, 102:Stab Yaw kP, 103:Rate Roll/Pitch kP, 104:Rate Roll/Pitch kI, 105:Rate Roll/Pitch kD, 106:Rate Pitch kP, 107:Rate Pitch kI, 108:Rate Pitch kD, 109:Rate Pitch FF, 110:Rate Roll kP, 111:Rate Roll kI, 112:Rate Roll kD, 113:Rate Roll FF, 114:Rate Yaw kP, 115:Rate Yaw kI, 116:Rate Yaw kD, 117:Rate Yaw FF, 118:Rate Roll/Pitch Filter, 119:Rate Yaw Filter, 120:Altitude Hold kP, 121:Throttle Rate kP, 122:Vertical Accel kP, 123:Vertical Accel kI, 124:Vertical Accel kD, 125:Waypoint Speed, 126:Circle Rate, 127:Ground Rangefinder Gain, 128:Loiter Pos kP, 129:Velocity XY kP, 130:Velocity XY kI, 131:Acro RollPitch kP, 132:Acro Yaw kP, 133:AHRS kP, 134:AHRS Yaw kP, 135:Declination, 136:RC Feel, 137:Motor Yaw Headroom, 138:Heli Ext Gyro
     GSCALAR(radio_tuning, "TUNE",                   0),
 
-    // @Param: TUNE_LOW
-    // @DisplayName: Tuning minimum
-    // @Description: The minimum value that will be applied to the parameter currently being tuned with the transmitter's channel 6 knob
-    // @User: Standard
-    // @Range: 0 32767
-    GSCALAR(radio_tuning_low, "TUNE_LOW",           0),
-
-    // @Param: TUNE_HIGH
-    // @DisplayName: Tuning maximum
-    // @Description: The maximum value that will be applied to the parameter currently being tuned with the transmitter's channel 6 knob
-    // @User: Standard
-    // @Range: 0 32767
-    GSCALAR(radio_tuning_high, "TUNE_HIGH",         1000),
-
     // @Param: FRAME
     // @DisplayName: Frame Orientation (+, X or V)
     // @Description: Controls motor mixing for multicopters.  Not used for Tri or Traditional Helicopters.

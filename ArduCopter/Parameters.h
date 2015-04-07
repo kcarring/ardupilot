@@ -253,8 +253,8 @@ public:
         k_param_throttle_trim,          // remove
         k_param_esc_calibrate,
         k_param_radio_tuning,
-        k_param_radio_tuning_high,
-        k_param_radio_tuning_low,
+        k_param_radio_tuning_high,      // remove
+        k_param_radio_tuning_low,       // remove
         k_param_rc_speed = 192,
         k_param_failsafe_battery_enabled,
         k_param_throttle_mid,
@@ -387,8 +387,6 @@ public:
     AP_Int32        log_bitmask;
     AP_Int8         esc_calibrate;
     AP_Int16        radio_tuning;
-    AP_Int16        radio_tuning_high;
-    AP_Int16        radio_tuning_low;
     AP_Int8         frame_orientation;
     AP_Int8         arming_check;
 
