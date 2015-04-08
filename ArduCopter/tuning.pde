@@ -14,9 +14,13 @@ static void tuning() {
         return;
     }
 
-    float tuning_value = rcin.get_tuning_value_1();
+    do_tuning(rcin.get_tuning_function_1(), rcin.get_tuning_value_1());
+}
 
-    switch(rcin.get_tuning_function_1()) {
+// do_tuning - updates parameters based on tuning knob position
+static void do_tuning(uint16_t tuning_function, float tuning_value) {
+
+    switch(tuning_function) {
 
         case TUNING_STABILIZE_ROLL_PITCH_KP:
             // Roll, Pitch tuning
