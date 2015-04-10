@@ -129,20 +129,7 @@ const AP_Param::GroupInfo RCInput::var_info[] PROGMEM = {
 };
 
 // object constructor.
-RCInput::RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channel& rc_4, RC_Channel& rc_5, RC_Channel& rc_6, RC_Channel& rc_7, RC_Channel& rc_8, RC_Channel& rc_9,
-            RC_Channel& rc_10, RC_Channel& rc_11, RC_Channel& rc_12):
-    _rc_1(rc_1),
-    _rc_2(rc_2),
-    _rc_3(rc_3),
-    _rc_4(rc_4),
-    _rc_5(rc_5),
-    _rc_6(rc_6),
-    _rc_7(rc_7),
-    _rc_8(rc_8),
-    _rc_9(rc_9),
-    _rc_10(rc_10),
-    _rc_11(rc_11),
-    _rc_12(rc_12)
+RCInput::RCInput(void)
     {
         AP_Param::setup_object_defaults(this, var_info);
 
@@ -165,8 +152,7 @@ RCInput::RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channe
 uint8_t RCInput::get_flight_mode_switch_position()
 {
     // Get fresh channel data
-    refresh_channel_data(flight_mode_chan());
-    int16_t pwm_value = channel[flight_mode_chan()].radio_in;
+    int16_t pwm_value = RC_Channel::rc_channel(flight_mode_chan()-1)->radio_in;
 
     uint8_t switch_position;
     if      (pwm_value < 1231) switch_position = 0;
@@ -183,10 +169,9 @@ uint8_t RCInput::get_flight_mode_switch_position()
 float RCInput::get_tuning_value_1 (){
 
     // Get fresh channel data
-    refresh_channel_data(_tuning_chan[0]);
-    float pwm_value = channel[_tuning_chan[0]].radio_in;
-    float pwm_min = channel[_tuning_chan[0]].radio_min;
-    float pwm_max = channel[_tuning_chan[0]].radio_max;
+    float pwm_value = RC_Channel::rc_channel(_tuning_chan[0]-1)->radio_in;
+    float pwm_min = RC_Channel::rc_channel(_tuning_chan[0]-1)->radio_min;
+    float pwm_max = RC_Channel::rc_channel(_tuning_chan[0]-1)->radio_max;
 
     return (pwm_value - pwm_min) * (_tuning_1_high - _tuning_1_low) / (pwm_max - pwm_min) + _tuning_1_low;
 }
@@ -195,10 +180,9 @@ float RCInput::get_tuning_value_1 (){
 float RCInput::get_tuning_value_2 (){
 
     // Get fresh channel data
-    refresh_channel_data(_tuning_chan[1]);
-    float pwm_value = channel[_tuning_chan[1]].radio_in;
-    float pwm_min = channel[_tuning_chan[1]].radio_min;
-    float pwm_max = channel[_tuning_chan[1]].radio_max;
+    float pwm_value = RC_Channel::rc_channel(_tuning_chan[1]-1)->radio_in;
+    float pwm_min = RC_Channel::rc_channel(_tuning_chan[1]-1)->radio_min;
+    float pwm_max = RC_Channel::rc_channel(_tuning_chan[1]-1)->radio_max;
 
     return (pwm_value - pwm_min) * (_tuning_2_high - _tuning_2_low) / (pwm_max - pwm_min) + _tuning_2_low;
 }
@@ -207,80 +191,12 @@ float RCInput::get_tuning_value_2 (){
 float RCInput::get_tuning_value_3 (){
 
     // Get fresh channel data
-    refresh_channel_data(_tuning_chan[2]);
-    float pwm_value = channel[_tuning_chan[2]].radio_in;
-    float pwm_min = channel[_tuning_chan[2]].radio_min;
-    float pwm_max = channel[_tuning_chan[2]].radio_max;
+    float pwm_value = RC_Channel::rc_channel(_tuning_chan[2]-1)->radio_in;
+    float pwm_min = RC_Channel::rc_channel(_tuning_chan[2]-1)->radio_min;
+    float pwm_max = RC_Channel::rc_channel(_tuning_chan[2]-1)->radio_max;
 
     return (pwm_value - pwm_min) * (_tuning_3_high - _tuning_3_low) / (pwm_max - pwm_min) + _tuning_3_low;
 }
-
-void RCInput::refresh_channel_data(uint8_t chan){
-
-    switch(chan){
-        case 1:
-            channel[1].radio_in = _rc_1.radio_in;
-            channel[1].radio_min = _rc_1.radio_min;
-            channel[1].radio_max = _rc_1.radio_max;
-            break;
-        case 2:
-            channel[2].radio_in = _rc_2.radio_in;
-            channel[2].radio_min = _rc_2.radio_min;
-            channel[2].radio_max = _rc_2.radio_max;
-            break;
-        case 3:
-            channel[3].radio_in = _rc_3.radio_in;
-            channel[3].radio_min = _rc_3.radio_min;
-            channel[3].radio_max = _rc_3.radio_max;
-            break;
-        case 4:
-            channel[4].radio_in = _rc_4.radio_in;
-            channel[4].radio_min = _rc_4.radio_min;
-            channel[4].radio_max = _rc_4.radio_max;
-            break;
-        case 5:
-            channel[5].radio_in = _rc_5.radio_in;
-            channel[5].radio_min = _rc_5.radio_min;
-            channel[5].radio_max = _rc_5.radio_max;
-            break;
-        case 6:
-            channel[6].radio_in = _rc_6.radio_in;
-            channel[6].radio_min = _rc_6.radio_min;
-            channel[6].radio_max = _rc_6.radio_max;
-            break;
-        case 7:
-            channel[7].radio_in = _rc_7.radio_in;
-            channel[7].radio_min = _rc_7.radio_min;
-            channel[7].radio_max = _rc_7.radio_max;
-            break;
-        case 8:
-            channel[8].radio_in = _rc_8.radio_in;
-            channel[8].radio_min = _rc_8.radio_min;
-            channel[8].radio_max = _rc_8.radio_max;
-            break;
-        case 9:
-            channel[9].radio_in = _rc_9.radio_in;
-            channel[9].radio_min = _rc_9.radio_min;
-            channel[9].radio_max = _rc_9.radio_max;
-            break;
-        case 10:
-            channel[10].radio_in = _rc_10.radio_in;
-            channel[10].radio_min = _rc_10.radio_min;
-            channel[10].radio_max = _rc_10.radio_max;
-            break;
-        case 11:
-            channel[11].radio_in = _rc_11.radio_in;
-            channel[11].radio_min = _rc_11.radio_min;
-            channel[11].radio_max = _rc_11.radio_max;
-            break;
-        case 12:
-            channel[12].radio_in = _rc_12.radio_in;
-            channel[12].radio_min = _rc_12.radio_min;
-            channel[12].radio_max = _rc_12.radio_max;
-            break;
-    }
-}
-
 
 //Search for first channel with assigned function
 uint8_t RCInput::find_rc_input_func(int16_t func) const

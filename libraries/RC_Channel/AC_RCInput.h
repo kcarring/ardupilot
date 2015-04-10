@@ -12,8 +12,7 @@ class RCInput
 public:
     /// Constructor
     ///
-    RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channel& rc_4, RC_Channel& rc_5, RC_Channel& rc_6, RC_Channel& rc_7, RC_Channel& rc_8, RC_Channel& rc_9,
-            RC_Channel& rc_10, RC_Channel& rc_11, RC_Channel& rc_12);
+    RCInput(void);
 
     // RC Input Function enumeration
     enum rc_in_func {
@@ -141,9 +140,6 @@ public:
     // get_tuning_function_3 - return assigned tuning function 3.
     uint16_t get_tuning_function_3() {return _tuning_function[2];}
 
-    // refresh_channel_data - return radio in for specified channel
-    void refresh_channel_data(uint8_t chan);
-
     // accessors to get primary flight control channel assignments
     uint8_t roll_chan() {return _roll_chan;}
     uint8_t pitch_chan() {return _pitch_chan;}
@@ -200,19 +196,5 @@ private:
     AP_Float _tuning_2_high;
     AP_Float _tuning_3_low;
     AP_Float _tuning_3_high;
-
-    // RC Input Channel Objects
-    RC_Channel&     _rc_1;
-    RC_Channel&     _rc_2;
-    RC_Channel&     _rc_3;
-    RC_Channel&     _rc_4;
-    RC_Channel&     _rc_5;
-    RC_Channel&     _rc_6;
-    RC_Channel&     _rc_7;
-    RC_Channel&     _rc_8;
-    RC_Channel&     _rc_9;
-    RC_Channel&     _rc_10;
-    RC_Channel&     _rc_11;
-    RC_Channel&     _rc_12;
 };
 #endif
