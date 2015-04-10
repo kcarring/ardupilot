@@ -129,9 +129,17 @@ public:
 
     // get_tuning_value_1 - return tuning value for tuning channel 1.
     float get_tuning_value_1();
+    // get_tuning_value_2 - return tuning value for tuning channel 2.
+    float get_tuning_value_2();
+    // get_tuning_value_3 - return tuning value for tuning channel 3.
+    float get_tuning_value_3();
 
     // get_tuning_function_1 - return assigned tuning function 1.
-    uint16_t get_tuning_function_1() {return _tuning_function_1;}
+    uint16_t get_tuning_function_1() {return _tuning_function[0];}
+    // get_tuning_function_2 - return assigned tuning function 2.
+    uint16_t get_tuning_function_2() {return _tuning_function[1];}
+    // get_tuning_function_3 - return assigned tuning function 3.
+    uint16_t get_tuning_function_3() {return _tuning_function[2];}
 
     // refresh_channel_data - return radio in for specified channel
     void refresh_channel_data(uint8_t chan);
@@ -166,10 +174,12 @@ private:
     uint8_t _throttle_chan;
     uint8_t _yaw_chan;
     uint8_t _flight_mode_chan;
-    uint8_t _tuning_chan_1;
-    uint8_t _num_tuning_channels;
+    uint8_t _tuning_chan[3];            // Array holding up to 3 tuning channel assignments
+    uint8_t _num_tuning_channels;       // Number of tuning channels found
 
-    uint16_t _tuning_function_1;
+    uint16_t _tuning_function[3];
+
+    AP_Int16 * _ch_functions[13];
 
     // channel mappings
     AP_Int16 _ch1_function;
@@ -186,6 +196,10 @@ private:
     AP_Int16 _ch12_function;
     AP_Float _tuning_1_low;
     AP_Float _tuning_1_high;
+    AP_Float _tuning_2_low;
+    AP_Float _tuning_2_high;
+    AP_Float _tuning_3_low;
+    AP_Float _tuning_3_high;
 
     // RC Input Channel Objects
     RC_Channel&     _rc_1;

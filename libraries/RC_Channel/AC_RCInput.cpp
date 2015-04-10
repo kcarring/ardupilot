@@ -89,17 +89,41 @@ const AP_Param::GroupInfo RCInput::var_info[] PROGMEM = {
     // @User: Standard
     AP_GROUPINFO("CH12_FUNC", 11, RCInput, _ch12_function, NO_FUNCTION),
 
-    // @Param: TUNE_LOW
+    // @Param: TUNE_1_LOW
     // @DisplayName: Tuning minimum
     // @Description: The minimum value that will be applied to the parameter currently being tuned
     // @User: Standard
     AP_GROUPINFO("TUNE_1_LOW", 14, RCInput, _tuning_1_low, 0),
 
-    // @Param: TUNE_HIGH
+    // @Param: TUNE_1_HIGH
     // @DisplayName: Tuning maximum
     // @Description: The maximum value that will be applied to the parameter currently being tuned
     // @User: Standard
     AP_GROUPINFO("TUNE_1_HIGH", 15, RCInput, _tuning_1_high, 1),
+
+    // @Param: TUNE_2_LOW
+    // @DisplayName: Tuning minimum
+    // @Description: The minimum value that will be applied to the parameter currently being tuned
+    // @User: Standard
+    AP_GROUPINFO("TUNE_2_LOW", 16, RCInput, _tuning_2_low, 0),
+
+    // @Param: TUNE_2_HIGH
+    // @DisplayName: Tuning maximum
+    // @Description: The maximum value that will be applied to the parameter currently being tuned
+    // @User: Standard
+    AP_GROUPINFO("TUNE_2_HIGH", 17, RCInput, _tuning_2_high, 1),
+
+    // @Param: TUNE_3_LOW
+    // @DisplayName: Tuning minimum
+    // @Description: The minimum value that will be applied to the parameter currently being tuned
+    // @User: Standard
+    AP_GROUPINFO("TUNE_3_LOW", 18, RCInput, _tuning_3_low, 0),
+
+    // @Param: TUNE_3_HIGH
+    // @DisplayName: Tuning maximum
+    // @Description: The maximum value that will be applied to the parameter currently being tuned
+    // @User: Standard
+    AP_GROUPINFO("TUNE_3_HIGH", 19, RCInput, _tuning_3_high, 1),
 
     AP_GROUPEND
 };
@@ -121,6 +145,20 @@ RCInput::RCInput(RC_Channel& rc_1, RC_Channel& rc_2, RC_Channel& rc_3, RC_Channe
     _rc_12(rc_12)
     {
         AP_Param::setup_object_defaults(this, var_info);
+
+        // Load function param pointers into array for easy handling.
+        _ch_functions[1] = &_ch1_function;
+        _ch_functions[2] = &_ch2_function;
+        _ch_functions[3] = &_ch3_function;
+        _ch_functions[4] = &_ch4_function;
+        _ch_functions[5] = &_ch5_function;
+        _ch_functions[6] = &_ch6_function;
+        _ch_functions[7] = &_ch7_function;
+        _ch_functions[8] = &_ch8_function;
+        _ch_functions[9] = &_ch9_function;
+        _ch_functions[10] = &_ch10_function;
+        _ch_functions[11] = &_ch11_function;
+        _ch_functions[12] = &_ch12_function;
     }
 
 // get_flight_mode_switch_position - Determine position of flight mode switch and return.
@@ -145,12 +183,36 @@ uint8_t RCInput::get_flight_mode_switch_position()
 float RCInput::get_tuning_value_1 (){
 
     // Get fresh channel data
-    refresh_channel_data(_tuning_chan_1);
-    float pwm_value = channel[_tuning_chan_1].radio_in;
-    float pwm_min = channel[_tuning_chan_1].radio_min;
-    float pwm_max = channel[_tuning_chan_1].radio_max;
+    refresh_channel_data(_tuning_chan[0]);
+    float pwm_value = channel[_tuning_chan[0]].radio_in;
+    float pwm_min = channel[_tuning_chan[0]].radio_min;
+    float pwm_max = channel[_tuning_chan[0]].radio_max;
 
     return (pwm_value - pwm_min) * (_tuning_1_high - _tuning_1_low) / (pwm_max - pwm_min) + _tuning_1_low;
+}
+
+// get_tuning_value_2 - return tuning value for tuning channel 2.
+float RCInput::get_tuning_value_2 (){
+
+    // Get fresh channel data
+    refresh_channel_data(_tuning_chan[1]);
+    float pwm_value = channel[_tuning_chan[1]].radio_in;
+    float pwm_min = channel[_tuning_chan[1]].radio_min;
+    float pwm_max = channel[_tuning_chan[1]].radio_max;
+
+    return (pwm_value - pwm_min) * (_tuning_2_high - _tuning_2_low) / (pwm_max - pwm_min) + _tuning_2_low;
+}
+
+// get_tuning_value_3 - return tuning value for tuning channel 3.
+float RCInput::get_tuning_value_3 (){
+
+    // Get fresh channel data
+    refresh_channel_data(_tuning_chan[2]);
+    float pwm_value = channel[_tuning_chan[2]].radio_in;
+    float pwm_min = channel[_tuning_chan[2]].radio_min;
+    float pwm_max = channel[_tuning_chan[2]].radio_max;
+
+    return (pwm_value - pwm_min) * (_tuning_3_high - _tuning_3_low) / (pwm_max - pwm_min) + _tuning_3_low;
 }
 
 void RCInput::refresh_channel_data(uint8_t chan){
@@ -262,39 +324,20 @@ void RCInput::set_primary_control_channels()
     _yaw_chan = find_rc_input_func(CTRL_YAW);
     _flight_mode_chan = find_rc_input_func(SW_FLIGHT_MODE);
 
-    if (_ch5_function > 100){
-        _tuning_chan_1 = 5;
-        _tuning_function_1 = _ch5_function;
-    } else if (_ch6_function > 100){
-        _tuning_chan_1 = 6;
-        _tuning_function_1 = _ch6_function;
-    } else if (_ch7_function > 100){
-        _tuning_chan_1 = 7;
-        _tuning_function_1 = _ch7_function;
-    } else if (_ch8_function > 100){
-        _tuning_chan_1 = 8;
-        _tuning_function_1 = _ch8_function;
-    } else if (_ch9_function > 100){
-        _tuning_chan_1 = 9;
-        _tuning_function_1 = _ch9_function;
-    } else if (_ch10_function > 100){
-        _tuning_chan_1 = 10;
-        _tuning_function_1 = _ch10_function;
-    } else if (_ch11_function > 100){
-        _tuning_chan_1 = 11;
-        _tuning_function_1 = _ch11_function;
-    } else if (_ch12_function > 100){
-        _tuning_chan_1 = 12;
-        _tuning_function_1 = _ch12_function;
-    } else {
-        _tuning_chan_1 = 0;
-        _tuning_function_1 = 0;
-    }
+    // reset these
+    _num_tuning_channels = 0;
+    memset(_tuning_chan, 0, sizeof(_tuning_chan));
+    memset(_tuning_function, 0, sizeof(_tuning_function));
 
-    if (_tuning_chan_1 > 0){
-        _num_tuning_channels = 1;
-    } else {
-        _num_tuning_channels = 0;
+    // scan all aux channels looking for tuning functions
+    for (int i = 5; i <= 12; i++){
+        if (*_ch_functions[i] > 100){                                           // tuning functions are enumerated 101 and up
+            if (_num_tuning_channels < 3){                                      // maximum of 3 tuning channels possible
+                _num_tuning_channels++;                                         // increment num tuning channels
+                _tuning_chan[_num_tuning_channels-1] = i;                       // tuning chan array is zero indexed
+                _tuning_function[_num_tuning_channels-1] = *_ch_functions[i];
+            }
+        }
     }
 }
 
