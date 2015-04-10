@@ -14,7 +14,16 @@ static void tuning() {
         return;
     }
 
+    // must have at least one tuning channel or we wouldn't get this far
     do_tuning(rcin.get_tuning_function_1(), rcin.get_tuning_value_1());
+
+    if (rcin.get_num_tuning_channels() > 1){
+        do_tuning(rcin.get_tuning_function_2(), rcin.get_tuning_value_2());
+    }
+    
+    if (rcin.get_num_tuning_channels() > 2){
+        do_tuning(rcin.get_tuning_function_3(), rcin.get_tuning_value_3());
+    }
 }
 
 // do_tuning - updates parameters based on tuning knob position
