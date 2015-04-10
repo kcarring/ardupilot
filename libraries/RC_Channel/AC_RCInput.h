@@ -7,6 +7,8 @@
 #include <AP_Param.h>
 #include <RC_Channel.h>     // RC Channel Library
 
+#define MAX_TUNING_CHANNELS 3       // This cannot be expanded beyond 3 with adding low and high parameters and loading them into the pointer array in the constructor.
+
 class RCInput
 {
 public:
@@ -119,19 +121,11 @@ public:
     // get_num_tuning_channels - return number of tuning channels found.
     uint8_t get_num_tuning_channels() {return _num_tuning_channels;}
 
-    // get_tuning_value_1 - return tuning value for tuning channel 1.
-    float get_tuning_value_1();
-    // get_tuning_value_2 - return tuning value for tuning channel 2.
-    float get_tuning_value_2();
-    // get_tuning_value_3 - return tuning value for tuning channel 3.
-    float get_tuning_value_3();
+    // get_tuning_value - return tuning value for tuning channel according to index
+    float get_tuning_value(uint8_t index);
 
-    // get_tuning_function_1 - return assigned tuning function 1.
-    uint16_t get_tuning_function_1() {return _tuning_function[0];}
-    // get_tuning_function_2 - return assigned tuning function 2.
-    uint16_t get_tuning_function_2() {return _tuning_function[1];}
-    // get_tuning_function_3 - return assigned tuning function 3.
-    uint16_t get_tuning_function_3() {return _tuning_function[2];}
+    // get_tuning_function - return assigned tuning function according to index
+    uint16_t get_tuning_function(uint8_t index) {return _tuning_function[index];}
 
     // accessors to get primary flight control channel assignments
     uint8_t roll_chan() {return _roll_chan;}
@@ -163,14 +157,18 @@ private:
     uint8_t _throttle_chan;
     uint8_t _yaw_chan;
     uint8_t _flight_mode_chan;
-    uint8_t _tuning_chan[3];            // Array holding up to 3 tuning channel assignments
-    uint8_t _num_tuning_channels;       // Number of tuning channels found
 
-    uint16_t _tuning_function[3];
+    // member variable having to do with the tuning function channels
+    uint8_t _num_tuning_channels;                   // Number of tuning channels found
+    uint8_t _tuning_chan[MAX_TUNING_CHANNELS];      // Array holding tuning channel assignments
+    uint16_t _tuning_function[MAX_TUNING_CHANNELS]; // Array holding tuning channel functions
+    AP_Float * _tuning_low[MAX_TUNING_CHANNELS];    // Array holding pointers to tuning low parameters
+    AP_Float * _tuning_high[MAX_TUNING_CHANNELS];   // Array holding pointers to tuning high parameters
 
+    // Array holding pointers to channel function parameters
     AP_Int16 * _ch_functions[13];
 
-    // channel mappings
+    // channel function mappings
     AP_Int16 _ch1_function;
     AP_Int16 _ch2_function;
     AP_Int16 _ch3_function;
@@ -183,6 +181,8 @@ private:
     AP_Int16 _ch10_function;
     AP_Int16 _ch11_function;
     AP_Int16 _ch12_function;
+
+    // tuning function low and high values
     AP_Float _tuning_1_low;
     AP_Float _tuning_1_high;
     AP_Float _tuning_2_low;

@@ -146,6 +146,14 @@ RCInput::RCInput(void)
         _ch_functions[10] = &_ch10_function;
         _ch_functions[11] = &_ch11_function;
         _ch_functions[12] = &_ch12_function;
+
+        // Load tuning params pointers into arrays for easy handling.
+        _tuning_low[0] = &_tuning_1_low;
+        _tuning_high[0] = &_tuning_1_high;
+        _tuning_low[1] = &_tuning_2_low;
+        _tuning_high[1] = &_tuning_2_high;
+        _tuning_low[2] = &_tuning_3_low;
+        _tuning_high[2] = &_tuning_3_high;
     }
 
 // get_flight_mode_switch_position - Determine position of flight mode switch and return.
@@ -165,37 +173,15 @@ uint8_t RCInput::get_flight_mode_switch_position()
     return switch_position;
 }
 
-// get_tuning_value_1 - return tuning value for tuning channel 1.
-float RCInput::get_tuning_value_1 (){
+// get_tuning_value - return tuning value for tuning channel according to index
+float RCInput::get_tuning_value(uint8_t index){
 
     // Get fresh channel data
-    float pwm_value = RC_Channel::rc_channel(_tuning_chan[0]-1)->radio_in;
-    float pwm_min = RC_Channel::rc_channel(_tuning_chan[0]-1)->radio_min;
-    float pwm_max = RC_Channel::rc_channel(_tuning_chan[0]-1)->radio_max;
+    float pwm_value = RC_Channel::rc_channel(_tuning_chan[index]-1)->radio_in;
+    float pwm_min = RC_Channel::rc_channel(_tuning_chan[index]-1)->radio_min;
+    float pwm_max = RC_Channel::rc_channel(_tuning_chan[index]-1)->radio_max;
 
-    return (pwm_value - pwm_min) * (_tuning_1_high - _tuning_1_low) / (pwm_max - pwm_min) + _tuning_1_low;
-}
-
-// get_tuning_value_2 - return tuning value for tuning channel 2.
-float RCInput::get_tuning_value_2 (){
-
-    // Get fresh channel data
-    float pwm_value = RC_Channel::rc_channel(_tuning_chan[1]-1)->radio_in;
-    float pwm_min = RC_Channel::rc_channel(_tuning_chan[1]-1)->radio_min;
-    float pwm_max = RC_Channel::rc_channel(_tuning_chan[1]-1)->radio_max;
-
-    return (pwm_value - pwm_min) * (_tuning_2_high - _tuning_2_low) / (pwm_max - pwm_min) + _tuning_2_low;
-}
-
-// get_tuning_value_3 - return tuning value for tuning channel 3.
-float RCInput::get_tuning_value_3 (){
-
-    // Get fresh channel data
-    float pwm_value = RC_Channel::rc_channel(_tuning_chan[2]-1)->radio_in;
-    float pwm_min = RC_Channel::rc_channel(_tuning_chan[2]-1)->radio_min;
-    float pwm_max = RC_Channel::rc_channel(_tuning_chan[2]-1)->radio_max;
-
-    return (pwm_value - pwm_min) * (_tuning_3_high - _tuning_3_low) / (pwm_max - pwm_min) + _tuning_3_low;
+    return (pwm_value - pwm_min) * (*_tuning_high[index] - *_tuning_low[index]) / (pwm_max - pwm_min) + *_tuning_low[index];
 }
 
 //Search for first channel with assigned function
@@ -248,7 +234,7 @@ void RCInput::set_primary_control_channels()
     // scan all aux channels looking for tuning functions
     for (int i = 5; i <= 12; i++){
         if (*_ch_functions[i] > 100){                                           // tuning functions are enumerated 101 and up
-            if (_num_tuning_channels < 3){                                      // maximum of 3 tuning channels possible
+            if (_num_tuning_channels < MAX_TUNING_CHANNELS){                    // maximum of 3 tuning channels possible
                 _num_tuning_channels++;                                         // increment num tuning channels
                 _tuning_chan[_num_tuning_channels-1] = i;                       // tuning chan array is zero indexed
                 _tuning_function[_num_tuning_channels-1] = *_ch_functions[i];
