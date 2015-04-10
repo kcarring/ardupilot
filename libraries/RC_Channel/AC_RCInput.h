@@ -104,13 +104,6 @@ public:
         uint8_t ch12; // ch12 switch : 0 is low or false, 1 is center or true, 2 is high
     } switch_flag;
 
-    // RC Channel Data
-    struct channel_data {
-        int16_t radio_in;
-        int16_t radio_min;
-        int16_t radio_max;
-    } channel[13];
-
     //Search for first channel with assigned function
     uint8_t find_rc_input_func(int16_t func) const;
 
