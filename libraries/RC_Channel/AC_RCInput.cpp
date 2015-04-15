@@ -187,34 +187,14 @@ float RCInput::get_tuning_value(uint8_t index){
 //Search for first channel with assigned function
 uint8_t RCInput::find_rc_input_func(int16_t func) const
 {
-    if (_ch1_function == func){
-        return 1;
-    } else if (_ch2_function == func){
-        return 2;
-    } else if (_ch3_function == func){
-        return 3;
-    } else if (_ch4_function == func){
-        return 4;
-    } else if (_ch5_function == func){
-        return 5;
-    } else if (_ch6_function == func){
-        return 6;
-    } else if (_ch7_function == func){
-        return 7;
-    } else if (_ch8_function == func){
-        return 8;
-    } else if (_ch9_function == func){
-        return 9;
-    } else if (_ch10_function == func){
-        return 10;
-    } else if (_ch11_function == func){
-        return 11;
-    } else if (_ch12_function == func){
-        return 12;
-    } else {
-        // Failed to find function, return zero to indicate failure
-        return 0;
+    for (uint8_t index = 1; index <= 12; index++){
+        if (*_ch_functions[index] == func){
+            return index;
+        }
     }
+
+    // Failed to find function, return zero to indicate failure
+    return 0;
 }
 
 // set_primary_control_channels
